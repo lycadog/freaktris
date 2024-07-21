@@ -33,18 +33,17 @@ public class tile
 
     public bool checkCollision(board board) //returns whether or not the tile is currently colliding with something (ie about to be placed)
     {
-        boardPos = new Vector2I(piece.pos.X + localPos.X, piece.pos.Y + localPos.Y); //get tile board position
-
         GD.Print($"checkCollision event at {boardPos.X}, {boardPos.Y}");
 
         if (boardPos.Y == 0) //check if the tile is at the bottom of the board
         {
+            boardCollideFalling(board);
             return true;
         }
         return type.checkCollision(board.tiles, boardPos);
 
     }
-    public void collideFalling(board board) //runs when this falling tile collides with another tile ***WORRY ABOUT THESE 3 METHODS LATER
+    public void collideFalling(board board) //runs when this falling tile collides with another tile ***WORRY ABOUT THESE 2 METHODS LATER***
     {
         GD.Print($"collideFalling event at {boardPos.X}, {boardPos.Y}");
 
@@ -56,7 +55,7 @@ public class tile
 
         type.boardCollide(board.tiles, this);
     }
-    public void collideGround(board board) //runs when this placed tile collides with a falling tile
+    public void collideGround(board board) //runs when this placed tile collides with a falling tile ***WORRY ABOUT THESE 2 METHODS LATER***
     {
         GD.Print($"collideGround event at {boardPos.X}, {boardPos.Y}");
 
@@ -94,6 +93,11 @@ public class tile
         remove(board);
     }
 
+
+    public void updatePos() //updates tile board position
+    {
+        boardPos = piece.pos + localPos;
+    }
     public void remove(board board) //used to remove a tile
     {
         board.tiles[boardPos.X, boardPos.Y] = null;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class main : Node2D
-{
+{ //todo: maybe combine a bunch of classes down into combined files, would clean up the file structure a bit
 
 	public static gameState state;
 
@@ -92,7 +92,7 @@ public partial class main : Node2D
                         }
                         else { fallPiece();
 							GD.Print(currentPiece.pos.X + ", " + currentPiece.pos.Y); }
-						piecefallTimer = 0;
+							piecefallTimer = 0;
                     }
 				}
                 break;
@@ -103,10 +103,6 @@ public partial class main : Node2D
                 foreach (tile tile in currentPiece.tiles) //place every tile in the piece
                 {
                     tile.place(board);
-					if(tile.boardPos.Y != 0)
-					{
-						
-					}
                 }
 				board.updateGraphics();
                 GD.Print("piece placed at " + currentPiece.pos);
@@ -148,7 +144,7 @@ public partial class main : Node2D
 				}
 
 				//run enemy behavior like lowering enemy cooldown and playing enemy lines
-
+				
                 //CHECK FOR SCORABLE LINES AND SUCH
                 //place the piece, check and clear scorable lines
                 //add score, calculate level, count down enemy cooldown, play enemy lines,
@@ -173,14 +169,14 @@ public partial class main : Node2D
 		nextPiece = bag.getPiece();
 	}
 
+	//move a bunch of these piece-related methods to piece
 	public void playPiece() //runs when a piece is dropped
 	{
 		currentPiece.pos = new Vector2I(5, 20);
-		for (int x = 0; x > currentPiece.tiles.GetLength(0); x++){
-			for(int y = 0; y > currentPiece.tiles.GetLength(1); y++)
-			{
-				//this should create the data needed for the falling piece and the polygons to render it
-			}
+		foreach(tile tile in currentPiece.tiles)
+		{
+			tile.updatePos();
+			//add graphics stuff here
 		}
 	}
 
@@ -190,7 +186,7 @@ public partial class main : Node2D
         for (int x = 0; x < currentPiece.tiles.GetLength(0); x++){
             for (int y = 0; y < currentPiece.tiles.GetLength(1); y++){
                 if (currentPiece.tiles[x,y] != null) { //process through every solid tile and check the collision
-					if (currentPiece.tiles[x, y].checkCollision(board) == false) { 
+					if (currentPiece.tiles[x, y].checkCollision(board) == false) {
 						continue; //keep checking collision if the tile is not colliding, if one tile collides then the else will return true
 					}
 					else { return true; }
@@ -201,7 +197,11 @@ public partial class main : Node2D
     }
 	public void fallPiece() //lowers the currently falling piece
 	{
-		currentPiece.pos = new Vector2I(currentPiece.pos.X, currentPiece.pos.Y - 1);
+		currentPiece.pos = new Vector2I(currentPiece.pos.X, currentPiece.pos.Y - 1); //lower the piece
+		foreach(tile tile in currentPiece.tiles) //update every tile's position
+		{
+			tile.updatePos();
+        }
 		//update graphics to lower with the piece!
 		//maybe use the board renderer to render them while falling similar to a normal placed tile
 	}
