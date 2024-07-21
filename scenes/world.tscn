@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://5qavsusx6oo6"]
+
+[ext_resource type="Script" path="res://scripts/main.cs" id="1_i4t4p"]
+
+[node name="boardScene" type="Node2D"]
+metadata/_edit_horizontal_guides_ = [-449.0]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="world" type="Node2D" parent="."]
+script = ExtResource("1_i4t4p")
+
+[node name="board" type="Node2D" parent="world"]
+
+[node name="boardBG" type="Polygon2D" parent="world/board"]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-140, -280, 140, -280, 140, 280, -140, 280)
+
+[node name="border" type="Polygon2D" parent="world/board/boardBG"]
+z_index = -1
+color = Color(0.721569, 0.721569, 0.721569, 1)
+polygon = PackedVector2Array(-150, -290, 150, -290, 150, 290, -150, 290)
+
+[node name="tiles" type="Node2D" parent="world/board"]
+
+[node name="dTile" type="Polygon2D" parent="world/board/tiles"]
+visible = false
+z_index = 1
+position = Vector2(-126, 266)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
