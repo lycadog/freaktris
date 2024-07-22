@@ -58,13 +58,14 @@ public partial class main : Node2D
 
                 currentPiece = nextPiece;
 				nextPiece = bag.getPiece();
+				GD.Print(currentPiece.name);
 				state = gameState.pieceWait;
                 break;
 
             // ========== PIECE WAIT ==========
             case gameState.pieceWait: //run until input
 
-                if (Input.IsActionJustPressed("b_pieceDrop")) //change this to a configurable 5 second timer that can be ended early with an input eventually
+                if (Input.IsActionJustPressed("pieceDrop")) //change this to a configurable 5 second timer that can be ended early with an input eventually
                 {   //initiate piecefall
                     currentPiece.playPiece(board);
                     state = gameState.midTurn;
@@ -83,21 +84,19 @@ public partial class main : Node2D
                 if (inputCooldownTimer >= 0.2)
                 {
 					parseInput();
-
 				}
-				else {
-					if(piecefallTimer >= 1.0)
+
+                if (piecefallTimer >= 1.0)
 					{
-                        if (currentPiece.shouldPlace(board))//check for collision
+                        if (currentPiece.fallPiece(board))//check for collision
                         {
-                            GD.Print("piece place!");
+                            GD.Print("piece placed!");
                             state = gameState.endTurn;
                         }
-                        else { currentPiece.fallPiece(board);
-							GD.Print(currentPiece.pos.X + ", " + currentPiece.pos.Y); }
-							piecefallTimer = 0;
+                        
+						GD.Print(currentPiece.pos.X + ", " + currentPiece.pos.Y);
+						piecefallTimer = 0;
                     }
-				}
 
                 break;
 
@@ -113,7 +112,7 @@ public partial class main : Node2D
 
                 foreach (tile tile in currentPiece.tiles) //when a piece is placed, add each row it intersects to updatedRows
 				{
-					updatedRows.Add(tile.boardPos.Y);
+					if(tile != null) { updatedRows.Add(tile.boardPos.Y); }
 				}
 				updatedRows = updatedRows.Distinct().ToList(); //remove duplicate rows
 
@@ -175,17 +174,40 @@ public partial class main : Node2D
 		bool isMoveValid = false;
 		if (Input.IsActionPressed("boardLeft"))
 		{
-			currentPiece.isMoveValid(board, -1); //add code to actually move the piece is the move is valid
-			//add a method in boardPiece for moving the piece
+			if (currentPiece.isMoveValid(board, -1))
+			{
+				currentPiece.moveFallingPiece(-1, 0);
+				isMoveValid = true;
+			} 
+
 		}
 		else if (Input.IsActionPressed("boardRight"))
 		{
-
+            if (currentPiece.isMoveValid(board, 1))
+            {
+                currentPiece.moveFallingPiece(1, 0);
+                isMoveValid = true;
+            }
+        }
+		else if (Input.IsActionJustPressed("boardSlam"))
+		{
+			bool isSlamming = true;
+			while (isSlamming)
+			{
+				if (currentPiece.fallPiece(board))
+				{
+					isSlamming = false;
+					state = gameState.endTurn;
+					break;
+				}
+            }
 		}
 
-
-        piecefallTimer = 0;
-        inputCooldownTimer = 0;
+		if (isMoveValid)
+		{
+            piecefallTimer = 0;
+            inputCooldownTimer = 0;
+        }
     }
 	
 	public bool isRowScoreable(int y)

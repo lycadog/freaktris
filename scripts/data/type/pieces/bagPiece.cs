@@ -18,8 +18,8 @@ public class bagPiece //used for pieces held in the bag
         tile[,] tiles = new tile[dimensions.X, dimensions.Y];
         boardPiece piece = new boardPiece(tiles, dimensions, name, rarity, color);
         for (int x = 0; x < dimensions.X; x++){
-            for(int y = 0; y < dimensions.Y; y++){
-                if (this.tiles[x, y] != null)
+            for(int y = 0; y < dimensions.Y; y++){ //process through each tile of the bagPiece and create a real tile for the boardPiece
+                if (this.tiles[x, y] != null) //only process solid tiles!
                 {
                     tiles[x, y] = new tile(this.tiles[x, y], piece, new Vector2I(x, y));
                 }}}

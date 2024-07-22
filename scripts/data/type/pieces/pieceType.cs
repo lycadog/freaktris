@@ -16,7 +16,7 @@ public class pieceType
     public rarity rarity { get; set; }
     public colorSet color { get; set; } //properly define and use colorsets
 
-    public void addToBag(bag bag) //add new piece to player's bag //REWORK HEAVILY to use new split bag piece and board pieces!!!!!
+    public void addToBag(bag bag) //add new piece to player's bag 
     {
         tileType[,] tiles = new tileType[dimensions.X,dimensions.Y];
         

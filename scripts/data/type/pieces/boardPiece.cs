@@ -23,16 +23,31 @@ public class boardPiece
         pos = new Vector2I(5, 20); //change to proper position later
         foreach (tile tile in tiles)
         {
-            tile.updatePos();
-            //add graphics stuff here
+            if(tile != null)
+            {
+                tile.updatePos();
+                //add graphics stuff here
+            }
+
         }
+    }
+
+    public void moveFallingPiece(int xOffset, int yOffset) //x and y offset for which direction to move
+    {
+        Vector2I offset = new Vector2I(xOffset, yOffset);
+        pos += offset;
+        updateTilePosition();
     }
 
     public void placePiece(board board)
     {
         foreach (tile tile in tiles) //place every tile in the piece
         {
-            tile.place(board);
+            if(tile != null)
+            {
+                tile.place(board);
+            }
+           
         }
         //update graphics stuff
     }
@@ -41,11 +56,16 @@ public class boardPiece
     {
         foreach(tile tile in tiles)
         {
-            tile.checkMoveCollision(board, xOffset, yOffset);
+            if(tile != null)
+            {
+                if (tile.checkMoveCollision(board, xOffset, yOffset))
+                {
+                    return false;
+                }
+            }
         }
-
-
         return true;
+        
     }
     public bool shouldPlace(board board) //checks if a piece should be placed or not
     {
@@ -63,14 +83,23 @@ public class boardPiece
         return false; //if no tiles collide then return false
     }
 
-    public void fallPiece(board board) //lowers the piece
+    public bool fallPiece(board board) //checks collision and lowers piece accordingly, returns if piece should be placed
     {
-        pos = new Vector2I(pos.X, pos.Y - 1); //lower the piece
-        foreach (tile tile in tiles) //update every tile's position
+        if (shouldPlace(board))
         {
-            tile.updatePos();
+            return true;
         }
-        //update graphics to lower with the piece!
-        //maybe use the board renderer to render them while falling similar to a normal placed tile
+        moveFallingPiece(0, -1);
+        return false;
+    }
+    public void updateTilePosition()
+    {
+        foreach(tile tile in tiles)
+        {
+            if(tile !=null )
+            {
+                tile.updatePos();
+            }
+        }
     }
 }

@@ -8,10 +8,6 @@ public class basicTile : tileType
     public override bool checkMoveCollision(tile[,] board, Vector2I boardPos, Vector2I checkPos)
     {
         return board[checkPos.X, checkPos.Y] != null; //rework this to call events and such later
-        if (board[checkPos.X, checkPos.Y] != null)
-        {
-            return true;
-        }
     }
     public override bool checkFallingCollision(tile[,] board, Vector2I boardPos)
     {

@@ -36,10 +36,10 @@ public class tile
         GD.Print($"checkMoveCollision event at {boardPos.X}, {boardPos.Y} offset at {xOffset}");
         Vector2I checkPos = new Vector2I(boardPos.X + xOffset, boardPos.Y + yOffset);
         
-        if(xOffset < 0) { return true; }
-        if(xOffset > board.dimensions.X) { return true; } //if the tile is outside the board dimensions return true (invalid move)
-        if(yOffset < 0) { return true; }
-        if(yOffset > board.dimensions.Y) { return true; } //maybe add game over code here?
+        if(checkPos.X < 0) { return true; }
+        if(checkPos.X >= board.dimensions.X) { return true; } //if the tile is outside the board dimensions return true (invalid move)
+        if(checkPos.Y < 0) { return true; }
+        if(checkPos.Y >= board.dimensions.Y) { return true; } //maybe add game over code here?
 
 
         
