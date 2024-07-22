@@ -5,10 +5,18 @@ using System;
 public class basicTile : tileType
 {
 
-
-    public override bool checkCollision(tile[,] board, Vector2I boardPos)
+    public override bool checkMoveCollision(tile[,] board, Vector2I boardPos, Vector2I checkPos)
     {
-        return board[boardPos.X, boardPos.Y - 1] != null; //check if there is a piece 1 tile below this one
+        return board[checkPos.X, checkPos.Y] != null; //rework this to call events and such later
+        if (board[checkPos.X, checkPos.Y] != null)
+        {
+            return true;
+        }
+    }
+    public override bool checkFallingCollision(tile[,] board, Vector2I boardPos)
+    {
+        return board[boardPos.X, boardPos.Y - 1] != null; //check if there is a piece below the tile
+
     }
     public override void boardCollide(tile[,] board, tile tile)
     {

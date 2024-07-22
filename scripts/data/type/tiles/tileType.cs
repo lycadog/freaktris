@@ -4,10 +4,11 @@ using System;
 [Serializable]
 public abstract class tileType //add method parameters later
 {
-	//maybe rework this class so the tile class itself has all these methods, and just calls from the type
-	//so for example you can call tile.checkCollision and, it'll check the default collision needed for all tiles, AND then call the tiletype collision
-	
-    public abstract bool checkCollision(tile[,] board, Vector2I boardPos); //returns whether or not the tile is currently colliding with something (ie about to be placed)
+    //maybe rework this class so the tile class itself has all these methods, and just calls from the type
+    //so for example you can call tile.checkCollision and, it'll check the default collision needed for all tiles, AND then call the tiletype collision
+
+    public abstract bool checkMoveCollision(tile[,] board, Vector2I boardPos, Vector2I checkPos); //returns whether or not the next move collides
+    public abstract bool checkFallingCollision(tile[,] board, Vector2I boardPos); //returns whether or not the falling piece is colliding with something below it
     public abstract void collideFalling(tile[,] board, tile tile); //runs when this falling tile collides with another tile
     public abstract void boardCollide(tile[,] board, tile tile); //runs when this falling tile collides with the bottom of the board
     public abstract void collideGround(tile[,] board, tile tile); //runs when this placed tile collides with a falling tile

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class main : Node2D
-{ //todo: maybe combine a bunch of classes down into combined files, would clean up the file structure a bit
+{ //add an events system eventually!!!!
 
 	public static gameState state;
 
@@ -20,6 +20,7 @@ public partial class main : Node2D
 	public long scoreRequired = 1000; //this is enemy health, rework later to initialize along with custom enemy class health
 
 	public double piecefallTimer = 0;
+	public double inputCooldownTimer = 1;
 	public boardPiece currentPiece;
 	public boardPiece heldPiece;
 	public boardPiece nextPiece; 
@@ -39,8 +40,6 @@ public partial class main : Node2D
 		state = new gameState();
 		state = gameState.roundStart;
 		bag = new bag();
-		
-		
     }
 
     public void coreGameLoop(double deltaTime)
@@ -67,43 +66,45 @@ public partial class main : Node2D
 
                 if (Input.IsActionJustPressed("b_pieceDrop")) //change this to a configurable 5 second timer that can be ended early with an input eventually
                 {   //initiate piecefall
-					playPiece();
+                    currentPiece.playPiece(board);
                     state = gameState.midTurn;
                 }
 				break;
 
             // ========== MID TURN ==========
             case gameState.midTurn: //run continuously during a turn, while a piece is falling (ie piecefall!)
-									
-				//add input code to move falling piece
-	
-				if (parseInput())//if input is detected: check if input is possible. if input is possible: do input, reset cooldown timer
+
+                //add input code to move falling piece
+
+                piecefallTimer += deltaTime; //increment timer
+				inputCooldownTimer += deltaTime;
+
+                //rework the input later to be a bit more natural (like with pressing vs holding move keys
+                if (inputCooldownTimer >= 0.2)
                 {
-					piecefallTimer = 0;
+					parseInput();
+
 				}
 				else {
-					piecefallTimer += deltaTime; //increment timer
 					if(piecefallTimer >= 1.0)
 					{
-                        if (shouldPlace())//check for collision
+                        if (currentPiece.shouldPlace(board))//check for collision
                         {
                             GD.Print("piece place!");
                             state = gameState.endTurn;
                         }
-                        else { fallPiece();
+                        else { currentPiece.fallPiece(board);
 							GD.Print(currentPiece.pos.X + ", " + currentPiece.pos.Y); }
 							piecefallTimer = 0;
                     }
 				}
+
                 break;
 
 				// ========== END TURN ==========
 			case gameState.endTurn:
 
-                foreach (tile tile in currentPiece.tiles) //place every tile in the piece
-                {
-                    tile.place(board);
-                }
+				currentPiece.placePiece(board);
 				board.updateGraphics();
                 GD.Print("piece placed at " + currentPiece.pos);
 
@@ -130,7 +131,7 @@ public partial class main : Node2D
 						turnScore = board.tiles[x, y].score(board, turnScore);
 					}
 				}
-				totalScore += turnScore;
+				totalScore += turnScore; //REWORK SCORE calculations later ****
 				updatedRows.Clear();
 				scorableRows.Clear();
 
@@ -169,47 +170,23 @@ public partial class main : Node2D
 		nextPiece = bag.getPiece();
 	}
 
-	//move a bunch of these piece-related methods to piece
-	public void playPiece() //runs when a piece is dropped
+	public void parseInput() //runs during piecefall, checks input to move piece, determines move validity and executes move
 	{
-		currentPiece.pos = new Vector2I(5, 20);
-		foreach(tile tile in currentPiece.tiles)
+		bool isMoveValid = false;
+		if (Input.IsActionPressed("boardLeft"))
 		{
-			tile.updatePos();
-			//add graphics stuff here
+			currentPiece.isMoveValid(board, -1); //add code to actually move the piece is the move is valid
+			//add a method in boardPiece for moving the piece
 		}
-	}
-
-	public bool shouldPlace() //checks if a piece should be placed or not
-	{
-        
-        for (int x = 0; x < currentPiece.tiles.GetLength(0); x++){
-            for (int y = 0; y < currentPiece.tiles.GetLength(1); y++){
-                if (currentPiece.tiles[x,y] != null) { //process through every solid tile and check the collision
-					if (currentPiece.tiles[x, y].checkCollision(board) == false) {
-						continue; //keep checking collision if the tile is not colliding, if one tile collides then the else will return true
-					}
-					else { return true; }
-				}
-            }
-        }
-		return false; //if no tiles collide then return false
-    }
-	public void fallPiece() //lowers the currently falling piece
-	{
-		currentPiece.pos = new Vector2I(currentPiece.pos.X, currentPiece.pos.Y - 1); //lower the piece
-		foreach(tile tile in currentPiece.tiles) //update every tile's position
+		else if (Input.IsActionPressed("boardRight"))
 		{
-			tile.updatePos();
-        }
-		//update graphics to lower with the piece!
-		//maybe use the board renderer to render them while falling similar to a normal placed tile
-	}
 
-	public bool parseInput() //runs during piecefall, checks input to move piece, determines move validity and executes move
-	{ //returns true if an input is valid, resetting the piece fall timer on valid input
-		return false;
-	}
+		}
+
+
+        piecefallTimer = 0;
+        inputCooldownTimer = 0;
+    }
 	
 	public bool isRowScoreable(int y)
 	{
@@ -220,7 +197,6 @@ public partial class main : Node2D
 		}
 		return true; //if no tiles return empty, this will run and return true
     }
-
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -233,8 +209,6 @@ public partial class main : Node2D
 	{
 		coreGameLoop(delta);
 	}
-
-
 
     public enum gameState
     {

@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public class tile
-{
+{ //this class needs a general cleanup
     public tile(tileType type, boardPiece piece, Vector2I localPos)
     {
         this.type = type;
@@ -31,17 +31,30 @@ public class tile
     public Node2D gfx { get; set; }
     public Node2D specialGfx { get; set; }
 
-    public bool checkCollision(board board) //returns whether or not the tile is currently colliding with something (ie about to be placed)
-    {
-        GD.Print($"checkCollision event at {boardPos.X}, {boardPos.Y}");
+    public bool checkMoveCollision(board board, int xOffset, int yOffset) //returns whether or not the next move will collide
+    { //the offsets are for the tile to check
+        GD.Print($"checkMoveCollision event at {boardPos.X}, {boardPos.Y} offset at {xOffset}");
+        Vector2I checkPos = new Vector2I(boardPos.X + xOffset, boardPos.Y + yOffset);
+        
+        if(xOffset < 0) { return true; }
+        if(xOffset > board.dimensions.X) { return true; } //if the tile is outside the board dimensions return true (invalid move)
+        if(yOffset < 0) { return true; }
+        if(yOffset > board.dimensions.Y) { return true; } //maybe add game over code here?
 
-        if (boardPos.Y == 0) //check if the tile is at the bottom of the board
+
+        
+
+        return type.checkMoveCollision(board.tiles, boardPos, checkPos);
+
+    }
+    public bool checkFallingCollision(board board) //returns whether or not the piece is colliding with something below it
+    {
+        if (boardPos.Y == 0) //check if the colliding tile is outside the array
         {
             boardCollideFalling(board);
             return true;
         }
-        return type.checkCollision(board.tiles, boardPos);
-
+        return type.checkFallingCollision(board.tiles, boardPos);
     }
     public void collideFalling(board board) //runs when this falling tile collides with another tile ***WORRY ABOUT THESE 2 METHODS LATER***
     {

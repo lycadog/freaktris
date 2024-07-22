@@ -1,9 +1,8 @@
 using Godot;
 using System;
 
-[Serializable]
 public class bagPiece //used for pieces held in the bag
-{
+{ //nest this in board piece maybe?
     public bagPiece(tileType[,] tiles, Vector2I dimensions, string name, rarity rarity, Color color)
     {
         this.tiles = tiles;
@@ -30,7 +29,6 @@ public class bagPiece //used for pieces held in the bag
 
     public tileType[,] tiles { get; set; }
     public Vector2I dimensions { get; set; }
-    //public Vector2I pos { get; set; }
     public string name { get; set; }
     public int cooldown { get; set; } //may or may not use
     public rarity rarity { get; set; }
