@@ -103,7 +103,12 @@ public partial class main : Node2D
 				// ========== END TURN ==========
 			case gameState.endTurn:
 
-				currentPiece.placePiece(board);
+                foreach (tile tile in board.tiles){ //tick every tile
+                    if (tile != null)
+                    { tile.tick(board); }
+                }
+
+                currentPiece.placePiece(board);
 				board.updateGraphics();
                 GD.Print("piece placed at " + currentPiece.pos);
 
@@ -132,11 +137,9 @@ public partial class main : Node2D
 				}
 				totalScore += turnScore; //REWORK SCORE calculations later ****
 				updatedRows.Clear();
-				scorableRows.Clear();
+				scorableRows.Clear(); //actually add code to clear scored lines and lower rows above
 
-				foreach(tile tile in board.tiles) { //tick every tile
-					if(tile != null)
-					{tile.tick(board);}}
+
 
 				if(totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
 				{
@@ -160,11 +163,11 @@ public partial class main : Node2D
 	//a lot of the functions below need to properly call the tileType function to do things rather than doing them on their own
 	//otherwise we will not get our intended custom tileType behavior
 
-    public void boardStart()
+    public void boardStart() //add code to initialize board graphics properly
 	{
         nBoard = GetNode<Node2D>("board");
         nDefaultTile = GetNode<Polygon2D>("board/tiles/dTile");
-        board = new board(nBoard, nDefaultTile, new Vector2I(10,22));
+        board = new board(nBoard, nDefaultTile, new Vector2I(12,22));
         heldPiece = null;
 		nextPiece = bag.getPiece();
 	}

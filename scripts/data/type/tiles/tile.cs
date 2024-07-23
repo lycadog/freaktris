@@ -3,6 +3,7 @@ using System;
 
 public class tile
 { //this class needs a general cleanup
+    //idea: add empty tile type, when empty tile types try to run collision, simply call type.Interrupt() which stops the collision event, but only for empty tiles
     public tile(tileType type, boardPiece piece, Vector2I localPos)
     {
         this.type = type;
@@ -44,7 +45,7 @@ public class tile
 
         
 
-        return type.checkMoveCollision(board.tiles, boardPos, checkPos);
+        return type.checkMoveCollision(board, boardPos, checkPos);
 
     }
     public bool checkFallingCollision(board board) //returns whether or not the piece is colliding with something below it
@@ -54,25 +55,29 @@ public class tile
             boardCollideFalling(board);
             return true;
         }
-        return type.checkFallingCollision(board.tiles, boardPos);
+        return type.checkFallingCollision(board, boardPos);
+    }
+    public bool checkPlacedCollision(board board) //returns whether or not the placed tile should collide
+    {
+        return type.checkPlacedCollision(board);
     }
     public void collideFalling(board board) //runs when this falling tile collides with another tile ***WORRY ABOUT THESE 2 METHODS LATER***
     {
         GD.Print($"collideFalling event at {boardPos.X}, {boardPos.Y}");
 
-        type.collideFalling(board.tiles, this);
+        type.collideFalling(board, this);
     }
     public void boardCollideFalling(board board) //runs when this falling tile collides with the bottom of the board 
     {
         GD.Print($"boardCollideFalling event at {boardPos.X}, {boardPos.Y}");
 
-        type.boardCollide(board.tiles, this);
+        type.boardCollide(board, this);
     }
     public void collideGround(board board) //runs when this placed tile collides with a falling tile ***WORRY ABOUT THESE 2 METHODS LATER***
     {
         GD.Print($"collideGround event at {boardPos.X}, {boardPos.Y}");
 
-        type.collideGround(board.tiles, this);
+        type.collideGround(board, this);
     }
 
     public void place(board board) //places the tile on the board properly **** SOMETHING STRANGE happening here, the first tile is placed properly but the rest lag (are 1 tile up briefly), may result in issues
@@ -82,27 +87,27 @@ public class tile
         boardPos = piece.pos + localPos; //get proper tile position
 
         board.tiles[boardPos.X, boardPos.Y] = this; //place tile on the board
-        type.place(board.tiles, this);
+        type.place(board, this);
     }
     public void tick(board board) //runs after every turn
     {
         GD.Print($"tick event at {boardPos.X}, {boardPos.Y}");
 
-        type.tick(board.tiles, this);
+        type.tick(board, this);
     }
 
     public long score(board board, long score) //runs when this tile is scored
     {
         GD.Print($"score event at {boardPos.X}, {boardPos.Y}");
 
-        long tileScore = type.score(board.tiles, this, score);
+        long tileScore = type.score(board, this, score);
         remove(board);
         return tileScore;
     }
 
     public void destroy(board board) //runs when this tile is removed without scoring it
     {
-        type.destroy(board.tiles, this);
+        type.destroy(board, this);
         remove(board);
     }
 

@@ -5,40 +5,46 @@ using System;
 public class basicTile : tileType
 {
 
-    public override bool checkMoveCollision(tile[,] board, Vector2I boardPos, Vector2I checkPos)
+    public override bool checkMoveCollision(board board, Vector2I boardPos, Vector2I checkPos)
     {
-        return board[checkPos.X, checkPos.Y] != null; //rework this to call events and such later
+        return board.tiles[checkPos.X, checkPos.Y] != null && board.tiles[checkPos.X, checkPos.Y].checkPlacedCollision(board); //rework this to call events and such later
     }
-    public override bool checkFallingCollision(tile[,] board, Vector2I boardPos)
+    public override bool checkFallingCollision(board board, Vector2I boardPos)
     {
-        return board[boardPos.X, boardPos.Y - 1] != null; //check if there is a piece below the tile
+        return board.tiles[boardPos.X, boardPos.Y - 1] != null && board.tiles[boardPos.X, boardPos.Y-1].checkPlacedCollision(board); //check if there is a piece below the tile
 
     }
-    public override void boardCollide(tile[,] board, tile tile)
+    public override bool checkPlacedCollision(board board)
+    {
+        return true;
+    }
+    public override void boardCollide(board board, tile tile)
     {
     }
-    public override void collideFalling(tile[,] board, tile hit)
-    {
-    }
-
-    public override void collideGround(tile[,] board, tile tile)
-    {
-    }
-
-    public override void destroy(tile[,] board, tile tile)
+    public override void collideFalling(board board, tile hit)
     {
     }
 
-    public override void place(tile[,] board, tile tile)
+    public override void collideGround(board board, tile tile)
     {
     }
 
-    public override long score(tile[,] board, tile tile, long rowScore)
+    public override void destroy(board board, tile tile)
+    {
+    }
+
+    public override void place(board board, tile tile)
+    {
+    }
+
+    public override long score(board board, tile tile, long rowScore)
     {
         return rowScore + 1;
     }
 
-    public override void tick(tile[,] board, tile tile)
+    public override void tick(board board, tile tile)
     {
     }
+
+
 }
