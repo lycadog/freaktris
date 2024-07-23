@@ -4,6 +4,7 @@ using System.Linq;
 
 public partial class main : Node2D
 { //add an events system eventually!!!!
+  //your next goal is fixing scoring! it does not properly remove tiles or nodes fully from the board
 
 	public static gameState state;
 
@@ -109,10 +110,9 @@ public partial class main : Node2D
                 }
 
                 currentPiece.placePiece(board);
-				board.updateGraphics();
                 GD.Print("piece placed at " + currentPiece.pos);
+                board.updateGraphics(); //ineffecient use of this method twice, needs rework
 
-				
                 //need to add a bunch of extra lines here to call all of the tile event methods (tile.collided, tile.score, etc)
 
                 foreach (tile tile in currentPiece.tiles) //when a piece is placed, add each row it intersects to updatedRows
@@ -137,11 +137,11 @@ public partial class main : Node2D
 				}
 				totalScore += turnScore; //REWORK SCORE calculations later ****
 				updatedRows.Clear();
-				scorableRows.Clear(); //actually add code to clear scored lines and lower rows above
+				scorableRows.Clear(); 
+                board.updateGraphics();
+                //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
 
-
-
-				if(totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
+                if (totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
 				{
 					state = gameState.endRound; break;
 				}

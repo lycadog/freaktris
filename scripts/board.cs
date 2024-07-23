@@ -4,6 +4,8 @@ using System.Linq;
 
 public partial class board : Node2D
 {
+	//need a complete graphics rework eventually
+	//add better code to remove old tiles
 	public tile[,] tiles;
 	public List<tile> staleTiles = new List<tile>(); //delete each graphics update
 	public Vector2I dimensions;
@@ -34,13 +36,14 @@ public partial class board : Node2D
 		//level.loadStarterTiles whatever
     }
 
-	public void updateGraphics()
+	public void updateGraphics() //this method is inefficient, we need a complete graphics rework eventually
 	{
 		foreach(tile staleTile in staleTiles) //remove tiles queued for deletion
 		{
-			staleTile.gfx.QueueFree();
-			staleTile.specialGfx.QueueFree();
+			staleTile.gfx.Free();
+			//staleTile.specialGfx.Free();
 		}
+		staleTiles.Clear();
 		foreach(tile tile in tiles) //add sprites of new tiles
 		{
 			if (tile != null){
