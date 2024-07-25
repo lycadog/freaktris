@@ -1,0 +1,20 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cjaj0igytp6ow"]
+
+[ext_resource type="FontFile" uid="uid://dm0qn4o8518wl" path="res://Mx437_Acer710_Mono.ttf" id="1_hra2o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_do6nu"]
+
+[resource]
+default_font = ExtResource("1_hra2o")
+default_font_size = 32
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(1, 1, 1, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/line_spacing = 3
+Label/constants/outline_size = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 1
+Label/font_sizes/font_size = 32
+Label/fonts/font = ExtResource("1_hra2o")
+Label/styles/normal = SubResource("StyleBoxEmpty_do6nu")

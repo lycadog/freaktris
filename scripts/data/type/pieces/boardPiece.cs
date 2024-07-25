@@ -18,6 +18,19 @@ public class boardPiece
     public rarity rarity { get; set; }
     public Color color { get; set; }
 
+    public void updateGraphics(board board, bool isPlaced)
+    {
+        foreach(tile tile in tiles)
+        {
+            if(tile != null)    
+            {
+                board.updateAscii(tile.boardPos,"O", isPlaced);
+                
+            }
+            
+        }
+    }
+
     public void playPiece(board board) //runs when a piece is dropped
     {
         pos = new Vector2I(5, 20); //change to proper position later
@@ -46,6 +59,7 @@ public class boardPiece
             if(tile != null)
             {
                 tile.place(board);
+                updateGraphics(board, true);
             }
            
         }

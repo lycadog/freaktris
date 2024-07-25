@@ -4,9 +4,11 @@ using System.Linq;
 
 public partial class main : Node2D
 { //add an events system eventually!!!!
-  //your next goal is fixing scoring! it does not properly remove tiles or nodes fully from the board
+  //your next goal is EVENTS!!!! for graphics!!!!!
 
 	public static gameState state;
+
+    public board board;
 
     //run constants
     public bag bag;
@@ -32,9 +34,8 @@ public partial class main : Node2D
 	public List<int> scorableRows = new List<int>();
 
 	//misc
-    public board board;
     Node2D nBoard;
-    Polygon2D nDefaultTile;
+	Control asciiControl;
 
     public void runInit() //runs on run start, initializes important variables
     {
@@ -50,7 +51,7 @@ public partial class main : Node2D
             // ========== ROUND START ==========
             case gameState.roundStart: //run once when entering a battle (round)!
 
-                boardStart();
+                gameStart();
 				state = gameState.turnStart;
                 break;
 
@@ -98,6 +99,7 @@ public partial class main : Node2D
 						GD.Print(currentPiece.pos.X + ", " + currentPiece.pos.Y);
 						piecefallTimer = 0;
                     }
+				
 
                 break;
 
@@ -111,7 +113,7 @@ public partial class main : Node2D
 
                 currentPiece.placePiece(board);
                 GD.Print("piece placed at " + currentPiece.pos);
-                board.updateGraphics(); //ineffecient use of this method twice, needs rework
+                
 
                 //need to add a bunch of extra lines here to call all of the tile event methods (tile.collided, tile.score, etc)
 
@@ -137,8 +139,7 @@ public partial class main : Node2D
 				}
 				totalScore += turnScore; //REWORK SCORE calculations later ****
 				updatedRows.Clear();
-				scorableRows.Clear(); 
-                board.updateGraphics();
+				scorableRows.Clear();
                 //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
 
                 if (totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
@@ -163,11 +164,11 @@ public partial class main : Node2D
 	//a lot of the functions below need to properly call the tileType function to do things rather than doing them on their own
 	//otherwise we will not get our intended custom tileType behavior
 
-    public void boardStart() //add code to initialize board graphics properly
+    public void gameStart() //add code to initialize board graphics properly
 	{
         nBoard = GetNode<Node2D>("board");
-        nDefaultTile = GetNode<Polygon2D>("board/tiles/dTile");
-        board = new board(nBoard, nDefaultTile, new Vector2I(12,22));
+		asciiControl = GetNode<Control>("board/asciiBoard");
+        board = new board(nBoard, asciiControl, new Vector2I(12,22));
         heldPiece = null;
 		nextPiece = bag.getPiece();
 	}

@@ -8,7 +8,7 @@ public class bag
     public bag()
     {
         pieces = new List<bagPiece>();
-        data.bLong.addToBag(this);
+        data.bSquare.addToBag(this);
         name = "bag";
         GD.Print("bag made!");
     }
