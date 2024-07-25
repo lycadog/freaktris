@@ -26,7 +26,7 @@ public partial class main : Node2D
 	public double inputCooldownTimer = 1;
 	public boardPiece currentPiece;
 	public boardPiece heldPiece;
-	public boardPiece nextPiece; 
+	public boardPiece nextPiece;
 	//split off these variables or "stats" as they could be called into their own class maybe?
 	//stuff like the board dimensions and bag and such, so they could be freely altered by items and other things easily
 
@@ -44,7 +44,7 @@ public partial class main : Node2D
 		bag = new bag();
     }
 
-    public void coreGameLoop(double deltaTime)
+    public void coreGameLoop(double deltaTime) //needs some cleanup
     {
 			switch (state)
 		{
@@ -83,12 +83,12 @@ public partial class main : Node2D
 				inputCooldownTimer += deltaTime;
 
                 //rework the input later to be a bit more natural (like with pressing vs holding move keys
-                if (inputCooldownTimer >= 0.2)
+                if (inputCooldownTimer >= 0.1)
                 {
-					parseInput();
+					parseInput(deltaTime);
 				}
 
-                if (piecefallTimer >= 1.0)
+                if (piecefallTimer >= 0.6)
 					{
                         if (currentPiece.fallPiece(board))//check for collision
                         {
@@ -138,12 +138,17 @@ public partial class main : Node2D
 					}
 				}
 				totalScore += turnScore; //REWORK SCORE calculations later ****
+				turnScore = 0;
+				board.lowerRows(scorableRows);
 				updatedRows.Clear();
 				scorableRows.Clear();
+				board.updateAscii(); //rework graphical code to be a bit more streamlined and have fancy animations and stuff later
                 //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
 
+				GD.Print($"Current score: {totalScore}");
                 if (totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
 				{
+					GD.Print("ROUND ENDED!!!!!");
 					state = gameState.endRound; break;
 				}
 
@@ -173,14 +178,14 @@ public partial class main : Node2D
 		nextPiece = bag.getPiece();
 	}
 
-	public void parseInput() //runs during piecefall, checks input to move piece, determines move validity and executes move
+	public void parseInput(double deltaTime) //runs during piecefall, checks input to move piece, determines move validity and executes move
 	{
 		bool isMoveValid = false;
 		if (Input.IsActionPressed("boardLeft"))
 		{
 			if (currentPiece.isMoveValid(board, -1))
 			{
-				currentPiece.moveFallingPiece(-1, 0);
+				currentPiece.moveFallingPiece(board, -1, 0);
 				isMoveValid = true;
 			} 
 
@@ -189,10 +194,14 @@ public partial class main : Node2D
 		{
             if (currentPiece.isMoveValid(board, 1))
             {
-                currentPiece.moveFallingPiece(1, 0);
+                currentPiece.moveFallingPiece(board, 1, 0);
                 isMoveValid = true;
             }
         }
+		else if (Input.IsActionPressed("boardDown"))
+		{
+			piecefallTimer += deltaTime * 5;
+		}
 		else if (Input.IsActionJustPressed("boardSlam"))
 		{
 			bool isSlamming = true;

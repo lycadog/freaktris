@@ -15,6 +15,7 @@ public partial class board : Node2D
 
 	public RichTextLabel[,] asciiTiles;
 	public List<RichTextLabel> staleTiles; //use to remove stale tiles 
+	public List<tile> renderQueue;
 
     Node2D nBoard;
 	Control asciiControl;
@@ -35,6 +36,7 @@ public partial class board : Node2D
 		tiles = new tile[dimensions.X,dimensions.Y];
 		asciiTiles = new RichTextLabel[dimensions.X,dimensions.Y];
 		staleTiles = new List<RichTextLabel>();
+		renderQueue = new List<tile>();
 		initializeAsciiNodes();
 
 
@@ -42,23 +44,56 @@ public partial class board : Node2D
 		//level.loadStarterTiles whatever
     }
 
-	public void updateAscii(Vector2I pos, string text, bool temporary) //text is what should render
+	public void updateAscii() //unrender old tiles and render new ones
+	{
+		foreach(RichTextLabel text in staleTiles) //remove old tiles
+		{
+			text.Text = " ";
+		}
+		staleTiles.Clear();
+
+		foreach(tile tile in renderQueue) //render new tiles
+		{
+			renderTile(tile.boardPos, "O");
+			if (!tile.isPlaced)
+			{
+				staleTiles.Add(asciiTiles[tile.boardPos.X,tile.boardPos.Y]); //if they are not placed on the board, remove them next render
+			}
+		}
+		renderQueue.Clear();
+	}
+
+	public void renderTile(Vector2I pos, string text) //text is what should render, usually just "O"
 	{
 		RichTextLabel node = asciiTiles[pos.X,pos.Y];
 		node.Text = text;
 		GD.Print($"updated graphics at {pos.X}, {pos.Y}");
-		if(temporary)
-		{
-			staleTiles.Add(node);
-		}
 	}
-	public void removeStaleAscii()
+
+	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring
 	{
-		foreach(RichTextLabel node in staleTiles)
+		int length = scoredRows.Count;
+		if(length != 0)
 		{
-			node.Text = " ";
-		}
-		staleTiles.Clear();
+            for (int y = scoredRows.Max() + 1; y < dimensions.Y; y++)
+            {
+                for (int x = 0; x < dimensions.X; x++)
+                {
+					tile tile = tiles[x, y];
+					if(tile != null)
+					{
+                        renderQueue.Add(tile);
+                        staleTiles.Add(asciiTiles[x, y]);
+						tiles[x, y] = null;
+
+                        tiles[x, y - length] = tile;
+						tile.boardPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - length);
+                        
+                    }   
+                }
+            }
+        }
+		
 	}
 
 	public void initializeAsciiNodes() //create and set all ascii nodes properly
@@ -79,6 +114,16 @@ public partial class board : Node2D
 		}
 	}
 
+	public void pieceMoveEvent(boardPiece piece)
+	{
+		foreach(tile tile in piece.tiles)
+		{
+			if(tile != null)
+			{
+                renderQueue.Add(tile);
+            }
+		}
+	}
 
 	
 	//DEPRECATED METHOD

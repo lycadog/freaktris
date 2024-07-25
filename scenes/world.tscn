@@ -45,6 +45,7 @@ localize_numeral_system = false
 theme = ExtResource("2_2u4al")
 
 [node name="boardBorder" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
 offset_right = 252.0
 offset_bottom = 672.0
 auto_translate = false
@@ -79,6 +80,7 @@ fit_content = true
 autowrap_mode = 0
 
 [node name="boardBg" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
 offset_right = 252.0
 offset_bottom = 672.0
 auto_translate = false
@@ -115,6 +117,7 @@ autowrap_mode = 0
 
 [node name="boardTiles" type="RichTextLabel" parent="world/board/asciiBoard"]
 visible = false
+layout_mode = 0
 offset_left = 18.0
 offset_top = 28.0
 offset_right = 36.0
@@ -129,8 +132,10 @@ fit_content = true
 autowrap_mode = 0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="world/board/asciiBoard"]
+visible = false
 layout_mode = 0
 offset_left = 18.0
 offset_top = 28.0
 offset_right = 36.0
 offset_bottom = 56.0
+text = "¤"

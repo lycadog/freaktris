@@ -9,9 +9,11 @@ public class tile
         this.type = type;
         this.piece = piece;
         this.localPos = localPos; //we need a function for newly created tiles to initialize their local position! perhaps when new pieces are added to bag? //i think i did this already
-        this.stalePos = Vector2I.MaxValue;
+        isPlaced = false;
     }
 
+    
+    //DEPRECATED
     public Node2D initializeGfx(Node2D nTiles, Polygon2D defaultTile) //create a square polygon for the new tile
     {
         Polygon2D newTile = new Polygon2D();
@@ -30,9 +32,8 @@ public class tile
     public boardPiece piece { get; set; }
     public Vector2I boardPos { get; set; } //used for placed tiles on the board
     public Vector2I localPos { get; set; } //used for local position relative to the origin of the piece the tile belongs to
-    public Vector2I stalePos { get; set; } //used to remove old graphics
-    public Node2D gfx { get; set; } //gfx and specialgfx are deprecated
-    public Node2D specialGfx { get; set; }
+    public Node2D gfx { get; set; } //deprecated
+    public bool isPlaced { get; set; }
 
     public bool checkMoveCollision(board board, int xOffset, int yOffset) //returns whether or not the next move will collide
     { //the offsets are for the tile to check
@@ -121,6 +122,6 @@ public class tile
     public void remove(board board) //used to remove a tile
     {
         board.tiles[boardPos.X, boardPos.Y] = null;
-        board.asciiTiles[boardPos.X, boardPos.Y].Text = " "; //fix this later to be more proper
+        board.staleTiles.Add(board.asciiTiles[boardPos.X,boardPos.Y]); //add the tile to be removed next render step
     }
 }
