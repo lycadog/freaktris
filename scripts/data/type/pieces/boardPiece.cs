@@ -14,7 +14,7 @@ public class boardPiece
     public tile[,] tiles { get; set; }
     public Vector2I dimensions { get; set; }
     public Vector2I pos { get; set; } //this position might be desynced from the piece's tile's positions due to 0 index array shenanigans, look into later
-    public int rotation {  get; set; }
+    public int rotation {  get; set; } //varies from 0-3, since rotation can only be done in 90 degree increments
     public string name { get; set; }
     public rarity rarity { get; set; }
     public Color color { get; set; }
@@ -24,18 +24,32 @@ public class boardPiece
     {
         foreach(tile tile in tiles)
         {
-            board.renderQueue.Add(tile);
+            if(tile!= null)
+            {
+                board.renderQueue.Add(tile);
+            }
         }
         board.updateAscii();
     }
 
-    public void rotatePiece(board board, int angle)
+    public void rotatePiece(board board, int direction) //DIRECTION SHOULD ONLY EVER BE -1 OR 1
     {
-
+        foreach (tile tile in tiles)
+        {
+            if(tile != null)
+            {
+                tile.rotate(direction);
+                rotation += direction;
+                tile.updatePos();
+                updateGraphics(board);
+            }
+        }
+        
     }
+
     public void playPiece(board board) //runs when a piece is dropped
     {
-        pos = new Vector2I(5, 20); //change to proper position later
+        pos = new Vector2I(5, 18); //change to proper position later
         updateTilePosition();
         updateGraphics(board);
     }

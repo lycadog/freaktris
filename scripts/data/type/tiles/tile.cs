@@ -119,6 +119,20 @@ public class tile
     {
         boardPos = piece.pos + localPos;
     }
+
+    public void rotate(int direction)//DIRECTION SHOULD ONLY EVER BE -1 OR 1, NEVER ANYTHING ELSE
+    {
+        Vector2I swap; 
+        if(direction == 1)
+        {
+            swap = new Vector2I(-localPos.Y, localPos.X); //swap x and y coordinates
+        }
+        else
+        {
+            swap = new Vector2I(localPos.Y, -localPos.X); //swap x and y coordinates
+        }
+        localPos = swap;
+    }
     public void remove(board board) //used to remove a tile
     {
         board.tiles[boardPos.X, boardPos.Y] = null;

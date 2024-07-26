@@ -187,17 +187,22 @@ public partial class main : Node2D
 			{
 				currentPiece.moveFallingPiece(board, -1, 0);
 				isMoveValid = true;
-			} 
+			}
 
 		}
 		else if (Input.IsActionPressed("boardRight"))
 		{
-            if (currentPiece.isMoveValid(board, 1))
-            {
-                currentPiece.moveFallingPiece(board, 1, 0);
-                isMoveValid = true;
-            }
-        }
+			if (currentPiece.isMoveValid(board, 1))
+			{
+				currentPiece.moveFallingPiece(board, 1, 0);
+				isMoveValid = true;
+			}
+		}
+		else if (Input.IsActionPressed("boardRotateLeft"))
+		{
+			currentPiece.rotatePiece(board, -1);
+			isMoveValid = true;
+		}
 		else if (Input.IsActionPressed("boardDown"))
 		{
 			piecefallTimer += deltaTime * 5;
@@ -213,7 +218,7 @@ public partial class main : Node2D
 					state = gameState.endTurn;
 					break;
 				}
-            }
+			}
 		}
 
 		if (isMoveValid)

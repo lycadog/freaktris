@@ -114,17 +114,6 @@ public partial class board : Node2D
 		}
 	}
 
-	public void pieceMoveEvent(boardPiece piece)
-	{
-		foreach(tile tile in piece.tiles)
-		{
-			if(tile != null)
-			{
-                renderQueue.Add(tile);
-            }
-		}
-	}
-
 	
 	//DEPRECATED METHOD
 	/*public void updateGraphics() //this method is inefficient, we need a complete graphics rework eventually
