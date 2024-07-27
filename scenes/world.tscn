@@ -15,11 +15,12 @@ script = ExtResource("1_i4t4p")
 [node name="board" type="Node2D" parent="world"]
 
 [node name="boardBG" type="Polygon2D" parent="world/board"]
+z_index = -2
 color = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-140, -280, 140, -280, 140, 280, -140, 280)
 
 [node name="border" type="Polygon2D" parent="world/board/boardBG"]
-z_index = -1
+z_index = -2
 color = Color(0.721569, 0.721569, 0.721569, 1)
 polygon = PackedVector2Array(-150, -290, 150, -290, 150, 290, -150, 290)
 
@@ -80,6 +81,7 @@ fit_content = true
 autowrap_mode = 0
 
 [node name="boardBg" type="RichTextLabel" parent="world/board/asciiBoard"]
+z_index = -1
 layout_mode = 0
 offset_right = 252.0
 offset_bottom = 672.0
@@ -122,6 +124,58 @@ offset_left = 18.0
 offset_top = 28.0
 offset_right = 36.0
 offset_bottom = 56.0
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardShadow" type="RichTextLabel" parent="world/board/asciiBoard"]
+z_index = -1
+layout_mode = 0
+offset_left = 18.0
+offset_top = 28.0
+offset_right = 36.0
+offset_bottom = 56.0
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[color=111]▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="boardTiles2" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -156.923
+offset_top = 164.444
+offset_right = -138.923
+offset_bottom = 192.444
 auto_translate = false
 localize_numeral_system = false
 theme_override_fonts/normal_font = ExtResource("2_cs6h7")

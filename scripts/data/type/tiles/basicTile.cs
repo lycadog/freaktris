@@ -1,50 +1,67 @@
 using Godot;
 using System;
 
-[Serializable]
 public class basicTile : tileType
 {
+    public tile tile;
+    public board board;
 
-    public override bool checkMoveCollision(board board, Vector2I boardPos, Vector2I checkPos)
+    public basicTile(tile tile = null, board board = null)
     {
-        return board.tiles[checkPos.X, checkPos.Y] != null && board.tiles[checkPos.X, checkPos.Y].checkPlacedCollision(board); //rework this to call events and such later
+        this.tile = tile;
+        this.board = board;
     }
-    public override bool checkFallingCollision(board board, Vector2I boardPos)
-    {
-        return board.tiles[boardPos.X, boardPos.Y - 1] != null && board.tiles[boardPos.X, boardPos.Y-1].checkPlacedCollision(board); //check if there is a piece below the tile
 
+    public override tileType getNewInstance(board board, tile tile)
+    {
+        return new basicTile(tile, board);
     }
-    public override bool checkPlacedCollision(board board)
+    public override string getAscii()
+    {
+        return "O";
+    }
+    public override bool shouldCollide()
     {
         return true;
     }
-    public override void boardCollide(board board, tile tile)
+    public override bool checkMoveCollision(Vector2I boardPos, Vector2I checkPos)
+    {
+        return board.tiles[checkPos.X, checkPos.Y] != null && board.tiles[checkPos.X, checkPos.Y].checkPlacedCollision(); //rework this to call events and such later
+    }
+    public override bool checkFallingCollision(Vector2I boardPos)
+    {
+        return board.tiles[boardPos.X, boardPos.Y - 1] != null && board.tiles[boardPos.X, boardPos.Y-1].checkPlacedCollision(); //check if there is a piece below the tile
+
+    }
+    public override bool checkPlacedCollision()
+    {
+        return true;
+    }
+    public override void boardCollide(tile tile)
     {
     }
-    public override void collideFalling(board board, tile hit)
+    public override void collideFalling(tile hit)
     {
     }
 
-    public override void collideGround(board board, tile tile)
+    public override void collideGround(tile tile)
     {
     }
 
-    public override void destroy(board board, tile tile)
+    public override void destroy(tile tile)
     {
     }
 
-    public override void place(board board, tile tile)
+    public override void place(tile tile)
     {
     }
 
-    public override long score(board board, tile tile, long rowScore)
+    public override long score(tile tile, long rowScore)
     {
         return rowScore + 1;
     }
 
-    public override void tick(board board, tile tile)
+    public override void tick(tile tile)
     {
     }
-
-
 }

@@ -3,9 +3,14 @@ using System;
 
 public class colorSet
 {
-    public Color[] colors { get; set; }
-    public Color getRandomColor(pieceType piece)
+    public colorSet(string[] colors)
     {
-        return Colors.White;
+        this.colors = colors;
+    }
+
+    public string[] colors;
+    public string getRandomColor()
+    {
+        return colors[GD.RandRange(0, colors.Length-1)];
     }
 }

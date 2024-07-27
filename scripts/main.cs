@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class main : Node2D
-{ //add an events system eventually!!!!
-  //your next goal is EVENTS!!!! for graphics!!!!!
+{ //checking for null every single time a tile is needed for something is inefficient, maybe find a fix
+	//i found a fix!!! simply rework piece.tiles[,] to be a 1d array instead of a 2d array, since it does not need to be 2d
+	//REWORK piece and tile so they themselves store a reference to the board, instead of including as a parameter in literally every single function
 
 	public static gameState state;
 
@@ -27,15 +28,9 @@ public partial class main : Node2D
 	public boardPiece currentPiece;
 	public boardPiece heldPiece;
 	public boardPiece nextPiece;
-	//split off these variables or "stats" as they could be called into their own class maybe?
-	//stuff like the board dimensions and bag and such, so they could be freely altered by items and other things easily
 
 	public List<int> updatedRows = new List<int>();
 	public List<int> scorableRows = new List<int>();
-
-	//misc
-    Node2D nBoard;
-	Control asciiControl;
 
     public void runInit() //runs on run start, initializes important variables
     {
@@ -59,7 +54,7 @@ public partial class main : Node2D
             case gameState.turnStart: //run once at the start of a turn
 
                 currentPiece = nextPiece;
-				nextPiece = bag.getPiece();
+				nextPiece = bag.getPiece(board);
 				GD.Print(currentPiece.name);
 				state = gameState.pieceWait;
                 break;
@@ -69,7 +64,7 @@ public partial class main : Node2D
 
                 if (Input.IsActionJustPressed("pieceDrop")) //change this to a configurable 5 second timer that can be ended early with an input eventually
                 {   //initiate piecefall
-                    currentPiece.playPiece(board);
+                    currentPiece.playPiece();
                     state = gameState.midTurn;
                 }
 				break;
@@ -90,7 +85,7 @@ public partial class main : Node2D
 
                 if (piecefallTimer >= 0.6)
 					{
-                        if (currentPiece.fallPiece(board))//check for collision
+                        if (currentPiece.fallPiece())//check for collision
                         {
                             GD.Print("piece placed!");
                             state = gameState.endTurn;
@@ -108,10 +103,10 @@ public partial class main : Node2D
 
                 foreach (tile tile in board.tiles){ //tick every tile
                     if (tile != null)
-                    { tile.tick(board); }
+                    { tile.tick(); }
                 }
 
-                currentPiece.placePiece(board);
+                currentPiece.placePiece();
                 GD.Print("piece placed at " + currentPiece.pos);
                 
 
@@ -134,7 +129,7 @@ public partial class main : Node2D
 				{
 					foreach(int y in scorableRows)
 					{
-						turnScore = board.tiles[x, y].score(board, turnScore);
+						turnScore = board.tiles[x, y].score(turnScore);
 					}
 				}
 				totalScore += turnScore; //REWORK SCORE calculations later ****
@@ -171,11 +166,12 @@ public partial class main : Node2D
 
     public void gameStart() //add code to initialize board graphics properly
 	{
-        nBoard = GetNode<Node2D>("board");
-		asciiControl = GetNode<Control>("board/asciiBoard");
-        board = new board(nBoard, asciiControl, new Vector2I(12,22));
+        Node2D nBoard = GetNode<Node2D>("board");
+		Control asciiControl = GetNode<Control>("board/asciiBoard");
+		RichTextLabel shadow = GetNode<RichTextLabel>("board/asciiBoard/boardShadow");
+        board = new board(nBoard, asciiControl, shadow, new Vector2I(12,22));
         heldPiece = null;
-		nextPiece = bag.getPiece();
+		nextPiece = bag.getPiece(board);
 	}
 
 	public void parseInput(double deltaTime) //runs during piecefall, checks input to move piece, determines move validity and executes move
@@ -183,27 +179,36 @@ public partial class main : Node2D
 		bool isMoveValid = false;
 		if (Input.IsActionPressed("boardLeft"))
 		{
-			if (currentPiece.isMoveValid(board, -1))
+			if (currentPiece.isMoveValid(-1))
 			{
-				currentPiece.moveFallingPiece(board, -1, 0);
+				currentPiece.moveFallingPiece(-1, 0);
 				isMoveValid = true;
 			}
 
 		}
 		else if (Input.IsActionPressed("boardRight"))
 		{
-			if (currentPiece.isMoveValid(board, 1))
+			if (currentPiece.isMoveValid(1))
 			{
-				currentPiece.moveFallingPiece(board, 1, 0);
+				currentPiece.moveFallingPiece(1, 0);
 				isMoveValid = true;
 			}
 		}
-		else if (Input.IsActionPressed("boardRotateLeft"))
+		else if (Input.IsActionJustPressed("boardRotateLeft"))
 		{
-			currentPiece.rotatePiece(board, -1);
-			isMoveValid = true;
-		}
-		else if (Input.IsActionPressed("boardDown"))
+			if(isMoveValid = currentPiece.isRotationValid(-1))
+			{
+				currentPiece.rotatePiece(-1);
+			}
+        }
+        else if (Input.IsActionJustPressed("boardRotateRight"))
+        {
+            if (isMoveValid = currentPiece.isRotationValid(1))
+            {
+                currentPiece.rotatePiece(1);
+            }
+        }
+        else if (Input.IsActionPressed("boardDown"))
 		{
 			piecefallTimer += deltaTime * 5;
 		}
@@ -212,7 +217,7 @@ public partial class main : Node2D
 			bool isSlamming = true;
 			while (isSlamming)
 			{
-				if (currentPiece.fallPiece(board))
+				if (currentPiece.fallPiece())
 				{
 					isSlamming = false;
 					state = gameState.endTurn;
@@ -221,6 +226,7 @@ public partial class main : Node2D
 			}
 		}
 
+		
 		if (isMoveValid)
 		{
             piecefallTimer = 0;

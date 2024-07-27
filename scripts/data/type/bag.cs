@@ -13,7 +13,6 @@ public class bag
         data.bLBlockR.addToBag(this);
         data.bZBlockL.addToBag(this);
         data.bZBlockR.addToBag(this);
-        data.bSquare.addToBag(this);
         data.bTBlock.addToBag(this);
         name = "bag";
         GD.Print("bag made!");
@@ -25,9 +24,9 @@ public class bag
 
 
     public string name { get; set; }
-    public boardPiece getPiece()
+    public boardPiece getPiece(board board)
     {
         int index = GD.RandRange(0, pieces.Count-1);
-        return pieces[index].getBoardPiece();
+        return pieces[index].getBoardPiece(board);
     }
 }

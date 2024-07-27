@@ -1,8 +1,6 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 
 public partial class board : Node2D
 {
@@ -10,24 +8,22 @@ public partial class board : Node2D
 	//turn this class into graphics handler maybe
 	//add better code to remove old tiles
 	public tile[,] tiles;
-//delete each graphics update
 	public Vector2I dimensions;
 
 	public RichTextLabel[,] asciiTiles;
 	public List<RichTextLabel> staleTiles; //use to remove stale tiles 
-	public List<tile> renderQueue;
+	public List<renderable> renderQueue;
 
     Node2D nBoard;
 	Control asciiControl;
-	Node2D nTiles; // returns world/board/tiles path
-    Polygon2D defaultTile;
+	RichTextLabel pieceShadow;
 
-    public board(Node2D board, Control control, Vector2I dim)
+	public board(Node2D board, Control control, RichTextLabel text, Vector2I dim)
     {
         nBoard = board;
 		asciiControl = control;
         dimensions = dim;
-		nTiles = board.GetChild<Node2D>(0);
+		pieceShadow = text;
 		initializeTiles();
     }
 
@@ -36,7 +32,7 @@ public partial class board : Node2D
 		tiles = new tile[dimensions.X,dimensions.Y];
 		asciiTiles = new RichTextLabel[dimensions.X,dimensions.Y];
 		staleTiles = new List<RichTextLabel>();
-		renderQueue = new List<tile>();
+		renderQueue = new List<renderable>();
 		initializeAsciiNodes();
 
 
@@ -52,12 +48,12 @@ public partial class board : Node2D
 		}
 		staleTiles.Clear();
 
-		foreach(tile tile in renderQueue) //render new tiles
+		foreach(renderable render in renderQueue) //render new tiles
 		{
-			renderTile(tile.boardPos, "O");
-			if (!tile.isPlaced)
+			renderTile(render.pos, render.text);
+			if (render.temporary)
 			{
-				staleTiles.Add(asciiTiles[tile.boardPos.X,tile.boardPos.Y]); //if they are not placed on the board, remove them next render
+				staleTiles.Add(asciiTiles[render.pos.X,render.pos.Y]); //if they are not placed on the board, remove them next render
 			}
 		}
 		renderQueue.Clear();
@@ -67,7 +63,7 @@ public partial class board : Node2D
 	{
 		RichTextLabel node = asciiTiles[pos.X,pos.Y];
 		node.Text = text;
-		GD.Print($"updated graphics at {pos.X}, {pos.Y}");
+		//GD.Print($"updated graphics at {pos.X}, {pos.Y}");
 	}
 
 	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring
@@ -82,19 +78,21 @@ public partial class board : Node2D
 					tile tile = tiles[x, y];
 					if(tile != null)
 					{
-                        renderQueue.Add(tile);
+						
                         staleTiles.Add(asciiTiles[x, y]);
 						tiles[x, y] = null;
 
                         tiles[x, y - length] = tile;
 						tile.boardPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - length);
-                        
+                        tile.render(this);
                     }   
                 }
             }
         }
 		
 	}
+
+
 
 	public void initializeAsciiNodes() //create and set all ascii nodes properly
 	{
@@ -109,45 +107,25 @@ public partial class board : Node2D
 				node.Position = new Vector2((x + 1) * 18, 616 - (y * 28));
 				node.Size = new Vector2(18, 28);
 				node.Text = " ";
+				node.BbcodeEnabled = true;
 				asciiTiles[x, y] = node;
 			}
 		}
 	}
-
 	
-	//DEPRECATED METHOD
-	/*public void updateGraphics() //this method is inefficient, we need a complete graphics rework eventually
-	{
-		foreach(tile staleTile in staleTiles) //remove tiles queued for deletion
-		{
-			staleTile.gfx.Free();
-			//staleTile.specialGfx.Free();
-		}
-		staleTiles.Clear();
-		foreach(tile tile in tiles) //add sprites of new tiles
-		{
-			if (tile != null){
-				if (tile.gfx == null){ //check every tile to see if it has a polygon assigned
-					tile.initializeGfx(nTiles, defaultTile);
-					//ADD SPECIAL GFX HERE LATER for unique tile type graphics
-					
-				}}
-		}
-	}*/
+	public bool isPositionValid(Vector2I pos, bool shouldCollide) //checks if a tile is occupied or otherwise outside of the board
+	{ //shouldCollide refers to colliding with other tiles
 
-	//DEPRECATED METHOD
-	public Polygon2D addTile(int x, int y) //create a new polygon and set up its properties
-	{
-		Polygon2D newTile = new Polygon2D();
-		AddChild(newTile);
-		newTile.Reparent(nTiles);
-		newTile.Position = defaultTile.Position; //should probably make this less jank
-		newTile.Polygon = defaultTile.Polygon;
-		newTile.Name = "tile"+x+","+y;
-		newTile.MoveLocalX(x*28);
-		newTile.MoveLocalY(y * -28);
-		return newTile;
+        //if the tile is outside the board dimensions return false (invalid)
+        if (pos.X < 0) { return false; }
+        if (pos.X >= dimensions.X) { return false; }
+        if (pos.Y < 0) { return false; }
+        if (pos.Y >= dimensions.Y) { return false; }
+		GD.Print($"{pos.X}, {pos.Y} IS VALID: {tiles[pos.X,pos.Y] == null} =============");
+		
+
+        //if (tiles[pos.X, pos.Y] != null) { return false; }
+		return tiles[pos.X, pos.Y] == null;
 	}
 
-	
 }

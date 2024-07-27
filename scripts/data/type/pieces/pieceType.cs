@@ -3,15 +3,18 @@ using System;
 
 public class pieceType
 {
-    public pieceType(int xSize, int ySize, tileSet[,] tiles, string name, Color color) 
+    public pieceType(int xSize, int ySize, tileSet[,] tiles, Vector2I origin, string name, colorSet color) 
     {
         dimensions = new Vector2I(xSize, ySize);
         tileSet = tiles;
+        this.origin = origin;
         this.name = name;
+        this.color = color;
  
     }
     public tileSet[,] tileSet { get; set; }
     public Vector2I dimensions { get; set; }
+    public Vector2I origin {  get; set; }
     public string name { get; set; }
     public rarity rarity { get; set; }
     public colorSet color { get; set; } //properly define and use colorsets
@@ -27,7 +30,7 @@ public class pieceType
                     tiles[x, y] = tileSet[x, y].getRandomType();
                 }
             }}
-        bagPiece piece = new bagPiece(tiles, dimensions, name, rarity, Colors.White); //create new piece
+        bagPiece piece = new bagPiece(tiles, dimensions, origin, name, rarity, color.getRandomColor()); //create new piece
         //replace Colors.White with colorset.getrandomcolor later
 
         bag.pieces.Add(piece); //add new piece to player's bag
