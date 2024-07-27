@@ -5,7 +5,6 @@ using System.Linq;
 public partial class main : Node2D
 { //checking for null every single time a tile is needed for something is inefficient, maybe find a fix
 	//i found a fix!!! simply rework piece.tiles[,] to be a 1d array instead of a 2d array, since it does not need to be 2d
-	//REWORK piece and tile so they themselves store a reference to the board, instead of including as a parameter in literally every single function
 
 	public static gameState state;
 

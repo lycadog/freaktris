@@ -134,6 +134,7 @@ fit_content = true
 autowrap_mode = 0
 
 [node name="boardShadow" type="RichTextLabel" parent="world/board/asciiBoard"]
+visible = false
 z_index = -1
 layout_mode = 0
 offset_left = 18.0

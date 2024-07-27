@@ -142,9 +142,27 @@ public class boardPiece
         return false;
     }
 
-    public void getDropPos()
+    public void renderDropShadow() //renders the shadow below pieces and the piece preview
     {
-
+        int y = -1;
+        while(true)
+        {
+            if (isMoveValid(0, y))
+            {
+                dropPos = new Vector2I(pos.X, pos.Y + y);
+                break;
+            }
+            y -= 1;
+        }
+        foreach(tile tile in tiles)
+        {
+            if(tile != null)
+            {
+                Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y + y);
+                renderable render = new renderable(previewPos, "?", true);
+                board.renderQueue.Add(render);
+            }
+        }
     }
 
     public void updateTilePosition()
