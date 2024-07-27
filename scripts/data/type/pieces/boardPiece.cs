@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using System;
 using System.Reflection.Metadata.Ecma335;
 
@@ -14,6 +14,7 @@ public class boardPiece
         this.color = color;
         this.board = board;
         rotDimensions = dimensions;
+        isPlaced = false;
     }
     public board board;
     public tile[,] tiles { get; set; }
@@ -22,19 +23,23 @@ public class boardPiece
     public Vector2I pos { get; set; } //this position might be desynced from the piece's tile's positions due to 0 index array shenanigans, look into later //what
     public Vector2I dropPos {  get; set; } 
     public Vector2I origin {  get; set; }
+    public bool isPlaced {  get; set; }
     public string name { get; set; }
     public string color { get; set; }
     public rarity rarity { get; set; }
 
     public void updateGraphics()
     {
-        foreach(tile tile in tiles)
+        if (!isPlaced) { renderDropShadow(); }
+        foreach (tile tile in tiles)
         {
             if(tile!= null)
             {
                 tile.render(board);
             }
         }
+        
+        
         board.updateAscii();
     }
 
@@ -50,6 +55,7 @@ public class boardPiece
         }
         Vector2I swap = new Vector2I(rotDimensions.X, rotDimensions.Y);
         rotDimensions = swap; //switch rot dimensions since rotDimensions is rotate-adjusted dimensions
+        renderDropShadow();
         
         board.updateAscii();
     }
@@ -97,6 +103,7 @@ public class boardPiece
                 tile.render(board);
             }  
         }
+        isPlaced = true;
         board.updateAscii();
     }
 
@@ -108,7 +115,6 @@ public class boardPiece
             {
                 if (tile.checkMoveCollision(xOffset, yOffset))
                 {
-                    
                     return false;
                 }
             }
@@ -144,22 +150,24 @@ public class boardPiece
 
     public void renderDropShadow() //renders the shadow below pieces and the piece preview
     {
-        int y = -1;
+        int y = 0;
+        dropPos = pos;
         while(true)
         {
-            if (isMoveValid(0, y))
+            if (!isMoveValid(0, -y-1)) //i have no idea why but it always goes too low and reaches out of bounds without the -1. do NOT remove it
             {
-                dropPos = new Vector2I(pos.X, pos.Y + y);
+                dropPos = new Vector2I(pos.X, pos.Y - y);
                 break;
             }
-            y -= 1;
+            else { y += 1; }
+            
         }
         foreach(tile tile in tiles)
         {
             if(tile != null)
             {
-                Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y + y);
-                renderable render = new renderable(previewPos, "?", true);
+                Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - y);
+                renderable render = new renderable(previewPos, "▒", true);
                 board.renderQueue.Add(render);
             }
         }

@@ -228,6 +228,7 @@ public partial class main : Node2D
 		
 		if (isMoveValid)
 		{
+			
             piecefallTimer = 0;
             inputCooldownTimer = 0;
         }

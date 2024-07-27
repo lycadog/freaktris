@@ -61,9 +61,9 @@ public partial class board : Node2D
 
 	public void renderTile(Vector2I pos, string text) //text is what should render, usually just "O"
 	{
+		//GD.Print("RENDERABLE POS: " + pos);
 		RichTextLabel node = asciiTiles[pos.X,pos.Y];
 		node.Text = text;
-		//GD.Print($"updated graphics at {pos.X}, {pos.Y}");
 	}
 
 	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring

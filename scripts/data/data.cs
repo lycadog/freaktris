@@ -17,4 +17,5 @@ public static class data
     public static pieceType bZBlockR = new(2, 3, tiles = new tileSet[,] { { null, common, common }, { common, common, null } }, new Vector2I(0, 1), "Right Z Block", starter);
     public static pieceType bZBlockL = new(2, 3, tiles = new tileSet[,] { { common, common, null }, { null, common, common } }, new Vector2I(0, 1), "Left Z Block", starter);
 
+    public static pieceType bBrick = new(4, 3, tiles = new tileSet[,] { { common, common, common }, { common, common, common }, { common, common, common }, { common, common, common } }, new Vector2I(2, 2), "Brick", starter);
 }
