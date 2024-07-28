@@ -15,7 +15,7 @@ public class bag
         data.bZBlockL.addToBag(this);
         data.bZBlockR.addToBag(this);*/
         data.bLong.addToBag(this);
-        data.bShortStick.addToBag(this);
+        data.bStick.addToBag(this);
         data.bWedge.addToBag(this);
         data.bWedge.addToBag(this);
         data.bLongT.addToBag(this);

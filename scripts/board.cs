@@ -10,8 +10,11 @@ public partial class board : Node2D
 	public tile[,] tiles;
 	public Vector2I dimensions;
 
-	public RichTextLabel[,] asciiTiles;
-	public List<RichTextLabel> staleTiles; //use to remove stale tiles 
+	public RichTextLabel[,] asciiZ0; //Z layers 0-2 where 1 draws over 0, 2 draws over 1
+    public RichTextLabel[,] asciiZ1;
+	public RichTextLabel[,] asciiZ2;
+
+    public List<RichTextLabel> staleTiles; //use to remove stale tiles 
 	public List<renderable> renderQueue;
 
     Node2D nBoard;
@@ -36,8 +39,10 @@ public partial class board : Node2D
     public void initializeTiles()
 	{
 		tiles = new tile[dimensions.X,dimensions.Y];
-		asciiTiles = new RichTextLabel[dimensions.X,dimensions.Y];
-		staleTiles = new List<RichTextLabel>();
+		asciiZ0 = new RichTextLabel[dimensions.X,dimensions.Y];
+        asciiZ1 = new RichTextLabel[dimensions.X, dimensions.Y];
+        asciiZ2 = new RichTextLabel[dimensions.X, dimensions.Y];
+        staleTiles = new List<RichTextLabel>();
 		renderQueue = new List<renderable>();
 		initializeAsciiNodes();
 
@@ -54,48 +59,82 @@ public partial class board : Node2D
 		}
 		staleTiles.Clear();
 
+
 		foreach(renderable render in renderQueue) //render new tiles
 		{
-			renderTile(render.pos, render.text);
-			if (render.temporary)
-			{
-				staleTiles.Add(asciiTiles[render.pos.X,render.pos.Y]); //if they are not placed on the board, remove them next render
-			}
+			renderTile(render);
+			
 		}
 		renderQueue.Clear();
 	}
 
-	public void renderTile(Vector2I pos, string text) //text is what should render, usually just "O"
+	public void renderTile(renderable render) //text is what should render, usually just "O"
 	{
-		//GD.Print("RENDERABLE POS: " + pos);
-		RichTextLabel node = asciiTiles[pos.X,pos.Y];
-		node.Text = text;
+		RichTextLabel node;
+        switch (render.z)
+        {
+            case 0:
+				node = asciiZ0[render.pos.X, render.pos.Y];
+                break;
+			case 1:
+                node = asciiZ1[render.pos.X, render.pos.Y];
+                break;
+			case 2:
+                node = asciiZ2[render.pos.X, render.pos.Y];
+                break;
+			default:
+				goto End;
+		}
+        node.Text = render.text;
+		if (render.temporary)
+		{
+			staleTiles.Add(node);
+		}
+    End: {}
 	}
 
 	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring
 	{
-		int length = scoredRows.Count; //BUGGED !!!!! SEPERATE rows scoring at the same time breaks! consider lowering down one tile at a time!
-		if(length != 0)
-		{
-            for (int y = scoredRows.Max() + 1; y < dimensions.Y; y++)
-            {
-                for (int x = 0; x < dimensions.X; x++)
-                {
-					tile tile = tiles[x, y];
-					if(tile != null)
-					{
-						
-                        staleTiles.Add(asciiTiles[x, y]);
-						tiles[x, y] = null;
+		int length = scoredRows.Count; 
+		List<tile> movedTiles = new List<tile>();
+		int[] rows = new int[length];
 
-                        tiles[x, y - length] = tile;
-						tile.boardPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - length);
-                        tile.render(this);
-                    }   
-                }
-            }
-        }
+		for(int l = 0; l < length; l++) //sort scoredRows by descending
+		{
+			rows[l] = scoredRows.Max();
+			scoredRows.Remove(scoredRows.Max());
+		}
+
+		GD.Print(length);
+        for (int i = 0; i < length; i++)
+		{
 		
+			GD.Print("FAT BITCHES!!!!!!!!!!11");
+			for (int y = rows[i] + 1; y < dimensions.Y; y++)
+			{
+				for (int x = 0; x < dimensions.X; x++)
+				{
+					tile tile = tiles[x, y];
+					if (tile != null)
+					{
+                        GD.Print($"MOVING PIECE from {tile.boardPos} to [{tile.boardPos.X}, {tile.boardPos.Y - 1}]");
+
+
+						staleTiles.Add(asciiZ1[x, y]);
+                        tiles[x, y - 1] = tile;
+                        tile.boardPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - 1);
+                        tiles[x, y] = null;
+						
+							
+						movedTiles.Add(tile);
+					}
+				}
+			}
+		}
+		foreach(tile tile in movedTiles)
+		{
+			tile.render(this);
+		}
 	}
 
 	public void updatePiecePreview(boardPiece currentPiece, boardPiece nextPiece)
@@ -116,18 +155,30 @@ public partial class board : Node2D
 		{
 			for(int y = 0; y < dimensions.Y; y++)
 			{
-				RichTextLabel node = new RichTextLabel();
-				AddChild(node);
-				node.Reparent(asciiControl);
-				node.Position = new Vector2((x + 1) * 18, 616 - (y * 28));
-				node.Size = new Vector2(18, 28);
-				node.Text = " ";
-				node.BbcodeEnabled = true;
-				asciiTiles[x, y] = node;
-			}
+                RichTextLabel node0 = createAsciiNode(x, y, 0);
+                RichTextLabel node1 = createAsciiNode(x, y, 1);
+                RichTextLabel node2 = createAsciiNode(x, y, 2);
+
+                asciiZ0[x, y] = node0;
+                asciiZ1[x, y] = node1;
+                asciiZ2[x, y] = node2;
+            }
 		}
 	}
 	
+	public RichTextLabel createAsciiNode(int x, int y, int z)
+	{
+        RichTextLabel node = new RichTextLabel();
+        AddChild(node);
+        node.Reparent(asciiControl);
+        node.Position = new Vector2((x + 1) * 18, 616 - (y * 28));
+        node.Size = new Vector2(18, 28);
+        node.Text = " ";
+        node.BbcodeEnabled = true;
+		node.ZIndex = z;
+		return node;
+    }
+
 	public bool isPositionValid(Vector2I pos, bool shouldCollide) //checks if a tile is occupied or otherwise outside of the board
 	{ //shouldCollide refers to colliding with other tiles
 

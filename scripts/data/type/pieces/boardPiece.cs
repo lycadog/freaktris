@@ -33,7 +33,6 @@ public class boardPiece
         if (!isPlaced) { renderDropShadow(); }
         foreach (tile tile in tiles)
         {
-            GD.Print(tile);
                 tile.render(board);
         }
         
@@ -152,7 +151,7 @@ public class boardPiece
         foreach(tile tile in tiles)
         {
             Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - y);
-            renderable render = new renderable(previewPos, "▒", true);
+            renderable render = new renderable(previewPos, "[color=999999]▒", 0, true);
             board.renderQueue.Add(render);
             
         }

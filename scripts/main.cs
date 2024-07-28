@@ -20,7 +20,7 @@ public partial class main : Node2D
 
 	public long turnScore = 0;
 	public long totalScore = 0;
-	public long scoreRequired = 1000; //this is enemy health, rework later to initialize along with custom enemy class health
+	public long scoreRequired = 10000000; //this is enemy health, rework later to initialize along with custom enemy class health
 
 	public double piecefallTimer = 0;
 	public double inputCooldownTimer = 1;
@@ -134,13 +134,25 @@ public partial class main : Node2D
 						turnScore = board.tiles[x, y].score(turnScore);
 					}
 				}
+
+				if(scorableRows.Count > 0)
+				{
+                    turnScore += (scorableRows.Count-1) * 10;
+					board.lowerRows(scorableRows);
+					if (scorableRows.Count >= 4)
+					{
+						turnScore = (long)(turnScore * 1.5);
+					}
+                }
+				
+
 				totalScore += turnScore; //REWORK SCORE calculations later ****
 				turnScore = 0;
-				board.lowerRows(scorableRows);
+
 				updatedRows.Clear();
 				scorableRows.Clear();
+
 				board.updateAscii(); //rework graphical code to be a bit more streamlined and have fancy animations and stuff later
-									 //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
 
 				board.updateScore(totalScore);
 				GD.Print($"Current score: {totalScore}");
