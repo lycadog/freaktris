@@ -172,6 +172,7 @@ scroll_active = false
 autowrap_mode = 0
 
 [node name="boardTiles2" type="RichTextLabel" parent="world/board/asciiBoard"]
+visible = false
 layout_mode = 0
 offset_left = -156.923
 offset_top = 164.444
@@ -182,7 +183,25 @@ localize_numeral_system = false
 theme_override_fonts/normal_font = ExtResource("2_cs6h7")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
-text = "O"
+text = "[color=EE1199] qqq
+[color=44FFDD]q
+q
+"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles3" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -286.154
+offset_top = -22.2222
+offset_right = 91.8462
+offset_bottom = 61.7778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "╚══════════════════[color=FF11EE]QUA[color=22FFCC]TRI[color=AA00ff]MO[color=white]══════════════════╝"
 fit_content = true
 autowrap_mode = 0
 
@@ -194,3 +213,30 @@ offset_top = 28.0
 offset_right = 36.0
 offset_bottom = 56.0
 text = "¤"
+
+[node name="scoreText" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 252.0
+offset_top = 14.0
+offset_right = 487.0
+offset_bottom = 104.0
+text = "SCORE:"
+fit_content = true
+
+[node name="currentPreview" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -226.154
+offset_top = 14.4444
+offset_right = 0.846161
+offset_bottom = 116.444
+text = "NOW PLAYING:"
+fit_content = true
+
+[node name="nextPreview" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -225.846
+offset_top = 116.0
+offset_right = 1.15387
+offset_bottom = 218.0
+text = "NEXT UP:"
+fit_content = true

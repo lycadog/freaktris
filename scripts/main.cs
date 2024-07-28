@@ -31,6 +31,8 @@ public partial class main : Node2D
 	public List<int> updatedRows = new List<int>();
 	public List<int> scorableRows = new List<int>();
 
+	
+
     public void runInit() //runs on run start, initializes important variables
     {
 		state = new gameState();
@@ -55,6 +57,7 @@ public partial class main : Node2D
                 currentPiece = nextPiece;
 				nextPiece = bag.getPiece(board);
 				GD.Print(currentPiece.name);
+				board.updatePiecePreview(currentPiece, nextPiece);
 				state = gameState.pieceWait;
                 break;
 
@@ -137,8 +140,9 @@ public partial class main : Node2D
 				updatedRows.Clear();
 				scorableRows.Clear();
 				board.updateAscii(); //rework graphical code to be a bit more streamlined and have fancy animations and stuff later
-                //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
+									 //actually add code to clear scored lines and lower rows above ********* IMPORTANT ********************* =========================================
 
+				board.updateScore(totalScore);
 				GD.Print($"Current score: {totalScore}");
                 if (totalScore >= scoreRequired) //if the player has enough score to beat the encounter, end the encounter
 				{
@@ -168,7 +172,10 @@ public partial class main : Node2D
         Node2D nBoard = GetNode<Node2D>("board");
 		Control asciiControl = GetNode<Control>("board/asciiBoard");
 		RichTextLabel shadow = GetNode<RichTextLabel>("board/asciiBoard/boardShadow");
-        board = new board(nBoard, asciiControl, shadow, new Vector2I(12,22));
+        RichTextLabel score = GetNode<RichTextLabel>("board/asciiBoard/scoreText");
+        RichTextLabel preview = GetNode<RichTextLabel>("board/asciiBoard/currentPreview");
+        RichTextLabel nextPreview = GetNode<RichTextLabel>("board/asciiBoard/nextPreview");
+        board = new board(new Vector2I(12, 22), nBoard, asciiControl, shadow, score, preview, nextPreview);
         heldPiece = null;
 		nextPiece = bag.getPiece(board);
 	}
@@ -195,18 +202,22 @@ public partial class main : Node2D
 		}
 		else if (Input.IsActionJustPressed("boardRotateLeft"))
 		{
-			if(isMoveValid = currentPiece.isRotationValid(-1))
+			if(isMoveValid = currentPiece.isRotationValid(1))
 			{
-				currentPiece.rotatePiece(-1);
+				currentPiece.rotatePiece(1);
 			}
         }
         else if (Input.IsActionJustPressed("boardRotateRight"))
         {
-            if (isMoveValid = currentPiece.isRotationValid(1))
+            if (isMoveValid = currentPiece.isRotationValid(-1))
             {
-                currentPiece.rotatePiece(1);
+                currentPiece.rotatePiece(-1);
             }
         }
+		else if (Input.IsActionPressed("boardUp"))
+		{
+			piecefallTimer -= deltaTime * 0.5;
+		}
         else if (Input.IsActionPressed("boardDown"))
 		{
 			piecefallTimer += deltaTime * 5;

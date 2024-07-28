@@ -21,7 +21,7 @@ public class tile
 
     public bool checkMoveCollision(int xOffset, int yOffset) //returns whether or not the next move will collide
     { //the offsets are for the tile to check
-        GD.Print($"checkMoveCollision event at {boardPos.X}, {boardPos.Y} offset at {xOffset}, {yOffset}");
+        //GD.Print($"checkMoveCollision event at {boardPos.X}, {boardPos.Y} offset at {xOffset}, {yOffset}");
         Vector2I checkPos = new Vector2I(boardPos.X + xOffset, boardPos.Y + yOffset);
         
         if(checkPos.X < 0) { return true; }

@@ -4,7 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 
 public class boardPiece
 { //add methods to move and rotate the piece during piecefall
-    public boardPiece(tile[,] tiles, Vector2I dimensions, Vector2I origin, string name, rarity rarity, string color, board board)
+    public boardPiece(tile[] tiles, Vector2I dimensions, Vector2I origin, string name, rarity rarity, string color, board board)
     {
         this.tiles = tiles;
         this.dimensions = dimensions;
@@ -17,7 +17,7 @@ public class boardPiece
         isPlaced = false;
     }
     public board board;
-    public tile[,] tiles { get; set; }
+    public tile[] tiles { get; set; }
     public Vector2I dimensions { get; set; }
     public Vector2I rotDimensions { get; set; } //piece dimensions but rotated properly after rotation
     public Vector2I pos { get; set; } //this position might be desynced from the piece's tile's positions due to 0 index array shenanigans, look into later //what
@@ -33,10 +33,8 @@ public class boardPiece
         if (!isPlaced) { renderDropShadow(); }
         foreach (tile tile in tiles)
         {
-            if(tile!= null)
-            {
+            GD.Print(tile);
                 tile.render(board);
-            }
         }
         
         
@@ -47,11 +45,8 @@ public class boardPiece
     {
         foreach(tile tile in tiles)
         {
-            if(tile != null)
-            {
                 tile.rotate(direction);
                 tile.render(board);
-            }
         }
         Vector2I swap = new Vector2I(rotDimensions.X, rotDimensions.Y);
         rotDimensions = swap; //switch rot dimensions since rotDimensions is rotate-adjusted dimensions
@@ -64,15 +59,13 @@ public class boardPiece
     {
         GD.Print("CHECKING ROTATION");
         foreach(tile tile in tiles)
-        {
-            if(tile != null)
+        {           
+            Vector2I rotateBoardPos = tile.getRotatePos(direction) + pos;
+            if (!board.isPositionValid(rotateBoardPos, tile.type.shouldCollide()))
             {
-                Vector2I rotateBoardPos = tile.getRotatePos(direction) + pos;
-                if (!board.isPositionValid(rotateBoardPos, tile.type.shouldCollide()))
-                {
-                    return false;
-                }
+                return false;
             }
+
         }
         return true;
     }
@@ -96,12 +89,9 @@ public class boardPiece
     {
         foreach (tile tile in tiles) //place every tile in the piece
         {
-            if(tile != null)
-            {
-                tile.place();
-                tile.isPlaced = true;
-                tile.render(board);
-            }  
+            tile.place();
+            tile.isPlaced = true;
+            tile.render(board);
         }
         isPlaced = true;
         board.updateAscii();
@@ -110,13 +100,10 @@ public class boardPiece
     public bool isMoveValid(int xOffset = 0, int yOffset = 0) //returns whether or not a move is valid
     {
         foreach(tile tile in tiles)
-        {
-            if(tile != null)
+        {            
+            if (tile.checkMoveCollision(xOffset, yOffset))    
             {
-                if (tile.checkMoveCollision(xOffset, yOffset))
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -126,14 +113,14 @@ public class boardPiece
     {
         foreach(tile tile in tiles)
         {
-            if(tile != null)
-            { //process through every solid tile and check the collision
-                if (tile.checkFallingCollision() == false)
-                {
-                    continue; //keep checking collision if the tile is not colliding, if one tile collides then the else will return true
-                }
-                else { return true; }
+            //process through every solid tile and check the collision
+            
+            if (tile.checkFallingCollision() == false)    
+            {
+                continue; //keep checking collision if the tile is not colliding, if one tile collides then the else will return true
             }
+                
+            else { return true; }
         }
         return false; //if no tiles collide then return false
     }
@@ -164,12 +151,10 @@ public class boardPiece
         }
         foreach(tile tile in tiles)
         {
-            if(tile != null)
-            {
-                Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - y);
-                renderable render = new renderable(previewPos, "▒", true);
-                board.renderQueue.Add(render);
-            }
+            Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - y);
+            renderable render = new renderable(previewPos, "▒", true);
+            board.renderQueue.Add(render);
+            
         }
     }
 
@@ -177,10 +162,7 @@ public class boardPiece
     {
         foreach(tile tile in tiles)
         {
-            if(tile != null )
-            {
-                tile.updatePos();
-            }
+            tile.updatePos();
         }
     }
 }

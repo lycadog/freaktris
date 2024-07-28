@@ -17,13 +17,19 @@ public partial class board : Node2D
     Node2D nBoard;
 	Control asciiControl;
 	RichTextLabel pieceShadow;
+	RichTextLabel score;
+	RichTextLabel currentPreview;
+    RichTextLabel nextPreview;
 
-	public board(Node2D board, Control control, RichTextLabel text, Vector2I dim)
+    public board(Vector2I dim, Node2D board, Control control, RichTextLabel shadow, RichTextLabel score, RichTextLabel preview, RichTextLabel nextPreview)
     {
+        dimensions = dim;
         nBoard = board;
 		asciiControl = control;
-        dimensions = dim;
-		pieceShadow = text;
+		pieceShadow = shadow;
+		this.score = score;
+		currentPreview = preview;
+		this.nextPreview = nextPreview;
 		initializeTiles();
     }
 
@@ -68,7 +74,7 @@ public partial class board : Node2D
 
 	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring
 	{
-		int length = scoredRows.Count;
+		int length = scoredRows.Count; //BUGGED !!!!! SEPERATE rows scoring at the same time breaks! consider lowering down one tile at a time!
 		if(length != 0)
 		{
             for (int y = scoredRows.Max() + 1; y < dimensions.Y; y++)
@@ -92,7 +98,16 @@ public partial class board : Node2D
 		
 	}
 
-
+	public void updatePiecePreview(boardPiece currentPiece, boardPiece nextPiece)
+	{
+		currentPreview.Text = $"NOW PLAYING:\n{currentPiece.name}";
+		nextPreview.Text = $"NEXT UP:\n{nextPiece.name}";
+		
+	}
+	public void updateScore(long value)
+	{
+		score.Text = $"SCORE:\n{value}";
+	}
 
 	public void initializeAsciiNodes() //create and set all ascii nodes properly
 	{
