@@ -22,7 +22,7 @@ polygon = PackedVector2Array(-140, -280, 140, -280, 140, 280, -140, 280)
 [node name="border" type="Polygon2D" parent="world/board/boardBG"]
 z_index = -2
 color = Color(0.721569, 0.721569, 0.721569, 1)
-polygon = PackedVector2Array(-150, -290, 150, -290, 150, 290, -150, 290)
+polygon = PackedVector2Array(-150, -290, 150, -290, 150, 286, -150, 286)
 
 [node name="tiles" type="Node2D" parent="world/board"]
 visible = false
@@ -50,14 +50,14 @@ z_index = -2
 position = Vector2(-104.615, 321.111)
 scale = Vector2(0.769231, 1.11111)
 color = Color(0, 0, 0, 1)
-polygon = PackedVector2Array(-180, -280.29, 140, -280, 140, -100, -180, -100)
+polygon = PackedVector2Array(-164, -280, 140, -280, 140, 88, -164, 88)
 
 [node name="uiBG2" type="Polygon2D" parent="world/board/asciiBoard"]
 z_index = -2
 position = Vector2(383.846, 321.111)
 scale = Vector2(0.769231, 1.11111)
 color = Color(0, 0, 0, 1)
-polygon = PackedVector2Array(-180, -280, 20, -280, 20, -200, -180, -200, -180, -140)
+polygon = PackedVector2Array(-180, -280, 40, -280, 40, -70, -180, -70, -180, -140)
 
 [node name="boardBorder" type="RichTextLabel" parent="world/board/asciiBoard"]
 layout_mode = 0
@@ -186,21 +186,48 @@ scroll_active = false
 autowrap_mode = 0
 
 [node name="boardTiles2" type="RichTextLabel" parent="world/board/asciiBoard"]
-visible = false
 layout_mode = 0
-offset_left = -156.923
-offset_top = 164.444
-offset_right = -138.923
-offset_bottom = 192.444
+offset_left = -316.923
+offset_top = 668.889
+offset_right = -100.923
+offset_bottom = 696.889
 auto_translate = false
 localize_numeral_system = false
 theme_override_fonts/normal_font = ExtResource("2_cs6h7")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
-text = "[color=EE1199] qqq
-[color=44FFDD]q
-q
-"
+text = "[color=222]qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles4" type="RichTextLabel" parent="world/board/asciiBoard"]
+visible = false
+layout_mode = 0
+offset_left = 330.769
+offset_top = 616.667
+offset_right = 564.769
+offset_bottom = 672.667
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[color=444]kerokitsu"
+fit_content = true
+autowrap_mode = 0
+
+[node name="version" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 342.308
+offset_top = 647.778
+offset_right = 594.308
+offset_bottom = 703.778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[color=CCC]test v3 8-05"
 fit_content = true
 autowrap_mode = 0
 
@@ -238,6 +265,54 @@ text = "SCORE:
 0"
 fit_content = true
 
+[node name="levelLabel" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 252.0
+offset_top = 132.0
+offset_right = 406.0
+offset_bottom = 160.0
+text = "LVL ║ X
+    ║
+    ║
+"
+fit_content = true
+
+[node name="levelNum" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 252.308
+offset_top = 171.111
+offset_right = 307.308
+offset_bottom = 199.111
+text = "0"
+fit_content = true
+
+[node name="scoreBorder" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 252.0
+offset_top = 104.0
+offset_right = 415.0
+offset_bottom = 132.0
+text = "☼═══╬═══☼"
+fit_content = true
+
+[node name="previewBorder" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -232.308
+offset_top = 388.889
+offset_right = 13.6923
+offset_bottom = 416.889
+text = "░░░▒▒▒▓▓▓████"
+fit_content = true
+
+[node name="levelBorder" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 252.308
+offset_top = 215.556
+offset_right = 414.308
+offset_bottom = 243.556
+text = "███▓▓▒▒░░"
+fit_content = true
+
 [node name="currentPreview" type="RichTextLabel" parent="world/board/asciiBoard"]
 layout_mode = 0
 offset_left = -226.154
@@ -249,9 +324,288 @@ fit_content = true
 
 [node name="nextPreview" type="RichTextLabel" parent="world/board/asciiBoard"]
 layout_mode = 0
-offset_left = -225.846
-offset_top = 116.0
-offset_right = 1.15387
-offset_bottom = 218.0
+offset_left = -226.154
+offset_top = 131.111
+offset_right = 0.845993
+offset_bottom = 233.111
+theme = ExtResource("2_2u4al")
 text = "NEXT UP:"
 fit_content = true
+
+[node name="holdText" type="RichTextLabel" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = -226.154
+offset_top = 252.222
+offset_right = 0.845993
+offset_bottom = 354.222
+text = "HOLD:"
+fit_content = true
+
+[node name="timesNum" type="Label" parent="world/board/asciiBoard"]
+layout_mode = 0
+offset_left = 342.308
+offset_top = 171.111
+offset_right = 397.308
+offset_bottom = 199.111
+text = "1"
+horizontal_alignment = 1
+
+[node name="Polygon2D" type="Polygon2D" parent="world/board/asciiBoard"]
+z_index = -1
+position = Vector2(-326.923, -26.6667)
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(0, 0, 900, 0, 900, 40, 0, 40)
+
+[node name="teststuff" type="Control" parent="world/board"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -164.0
+offset_top = -303.0
+offset_right = 88.0
+offset_bottom = 369.0
+scale = Vector2(1.3, 0.9)
+auto_translate = false
+localize_numeral_system = false
+theme = ExtResource("2_2u4al")
+
+[node name="boardTiles6" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1200.77
+offset_top = 418.889
+offset_right = -1146.77
+offset_bottom = 474.889
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O O
+ O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles10" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1200.77
+offset_top = 517.778
+offset_right = -1128.77
+offset_bottom = 573.778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOOO
+  OO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles17" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -936.923
+offset_top = 418.889
+offset_right = -900.923
+offset_bottom = 474.889
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O
+OO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles18" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1200.77
+offset_top = 602.222
+offset_right = -1146.77
+offset_bottom = 658.222
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles19" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1035.38
+offset_top = 602.222
+offset_right = -981.385
+offset_bottom = 686.222
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOO
+ O
+ O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles22" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -951.539
+offset_top = 602.222
+offset_right = -897.539
+offset_bottom = 686.222
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOO
+OOO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles20" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -926.923
+offset_top = 517.778
+offset_right = -872.923
+offset_bottom = 601.778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O O
+OOO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles21" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1116.15
+offset_top = 602.222
+offset_right = -1062.15
+offset_bottom = 686.222
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O
+O
+OOO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles12" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1107.69
+offset_top = 517.778
+offset_right = -1035.69
+offset_bottom = 573.778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOOO
+ OO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles7" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1005.38
+offset_top = 517.778
+offset_right = -951.385
+offset_bottom = 573.778
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O O
+O O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles15" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1432.31
+offset_top = 433.333
+offset_right = -1378.31
+offset_bottom = 517.333
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = " O
+OOO
+ O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles16" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1442.31
+offset_top = 543.333
+offset_right = -1370.31
+offset_bottom = 627.333
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "OOOO
+OOOO
+OOOO"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles8" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1116.15
+offset_top = 418.889
+offset_right = -1062.15
+offset_bottom = 474.889
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O
+ O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles9" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -1035.38
+offset_top = 418.889
+offset_right = -981.385
+offset_bottom = 474.889
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O
+O"
+fit_content = true
+autowrap_mode = 0
+
+[node name="boardTiles13" type="RichTextLabel" parent="world/board/teststuff"]
+layout_mode = 0
+offset_left = -971.539
+offset_top = 418.889
+offset_right = -917.539
+offset_bottom = 474.889
+auto_translate = false
+localize_numeral_system = false
+theme_override_fonts/normal_font = ExtResource("2_cs6h7")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "O"
+fit_content = true
+autowrap_mode = 0

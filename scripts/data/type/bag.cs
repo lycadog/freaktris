@@ -9,11 +9,13 @@ public class bag
     {
         pieces = new List<bagPiece>();
         /*data.bLong.addToBag(this);
+		data.bTBlock.addToBag(this);
         data.bSquare.addToBag(this);
         data.bLBlockL.addToBag(this);
         data.bLBlockR.addToBag(this);
         data.bZBlockL.addToBag(this);
         data.bZBlockR.addToBag(this);*/
+
         data.bLong.addToBag(this);
         data.bStick.addToBag(this);
         data.bWedge.addToBag(this);
@@ -22,12 +24,26 @@ public class bag
         data.bCorner.addToBag(this);
         data.bBowl.addToBag(this);
         data.bRectangle.addToBag(this);
+
+        /*data.bLong.addToBag(this);
+        data.bCaret.addToBag(this);
+        data.bHatchetL.addToBag(this);
+        data.bHatchetR.addToBag(this);
+        data.bDipole.addToBag(this);
+        data.bSlash.addToBag(this);
+        data.bStump.addToBag(this);
+        data.bWedge.addToBag(this);
+        data.bTwig.addToBag(this);
+        data.bTwig.addToBag(this);
+        data.bNub.addToBag(this);*/
+
         name = "bag";
         GD.Print("bag made!");
     }
 
     public List<bagPiece> pieces;
     public tileSet starterSet;
+
 
 
 

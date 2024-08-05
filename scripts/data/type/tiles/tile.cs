@@ -86,7 +86,7 @@ public class tile
     {
         GD.Print($"score event at {boardPos.X}, {boardPos.Y}");
 
-        long tileScore = type.score(this, score);
+        long tileScore = type.score(this);
         remove(board);
         return tileScore;
     }
@@ -119,7 +119,7 @@ public class tile
     public void render(board board)
     {
         renderable render = new renderable(boardPos, getAscii(), 1, !isPlaced);
-        board.renderQueue.Add(render);
+        board.boardRenderQueue.Add(render);
     }
     public string getAscii()
     {
@@ -129,7 +129,7 @@ public class tile
     public void remove(board board) //used to remove a tile
     {
         board.tiles[boardPos.X, boardPos.Y] = null;
-        board.staleTiles.Add(board.asciiZ1[boardPos.X,boardPos.Y]); //add the tile to be removed next render step
+        board.boardStaleTiles.Add(board.asciiForeground[boardPos.X,boardPos.Y]); //add the tile to be removed next render step
         isPlaced = false;
     }
 }

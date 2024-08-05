@@ -1,3 +1,4 @@
 res://scenes/world.tscn
+res://asciitheme.tres
 res://scripts/board.cs
 res://scripts/main.cs

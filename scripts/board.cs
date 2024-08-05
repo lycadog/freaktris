@@ -1,21 +1,28 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 public partial class board : Node2D
 {
-	//need a complete graphics rework eventually
-	//turn this class into graphics handler maybe
-	//add better code to remove old tiles
+	//rework the board and tick graphics renderers to be less messy and wasteful, reuse code don't repeat it
+	
 	public tile[,] tiles;
 	public Vector2I dimensions;
 
-	public RichTextLabel[,] asciiZ0; //Z layers 0-2 where 1 draws over 0, 2 draws over 1
-    public RichTextLabel[,] asciiZ1;
-	public RichTextLabel[,] asciiZ2;
+	public RichTextLabel[,] asciiBackground; //Z layers 0-2 where 1 draws over 0, 2 draws over 1
+    public RichTextLabel[,] asciiForeground;
+	public RichTextLabel[,] asciiAnimations; // this is updated on tick, not on board update
 
-    public List<RichTextLabel> staleTiles; //use to remove stale tiles 
-	public List<renderable> renderQueue;
+	public List<animatable> animatables = new List<animatable>();
+	public List<animatable> staleAnimatables = new List<animatable>();
+
+	public List<renderable> tickRenderQueue = new List<renderable>(); //used for rendering every tick
+    public List<RichTextLabel> tickStaleTiles = new List<RichTextLabel>(); //use to remove stale graphics every tick
+
+
+    public List<RichTextLabel> boardStaleTiles = new List<RichTextLabel>(); //use to remove stale board tiles every board update
+    public List<renderable> boardRenderQueue = new List<renderable>(); //used for rendering every board update
 
     Node2D nBoard;
 	Control asciiControl;
@@ -23,8 +30,11 @@ public partial class board : Node2D
 	RichTextLabel score;
 	RichTextLabel currentPreview;
     RichTextLabel nextPreview;
+	RichTextLabel heldPiece;
+	RichTextLabel levelUI;
+	Label levelTimesUI;
 
-    public board(Vector2I dim, Node2D board, Control control, RichTextLabel shadow, RichTextLabel score, RichTextLabel preview, RichTextLabel nextPreview)
+    public board(Vector2I dim, Node2D board, Control control, RichTextLabel shadow, RichTextLabel score, RichTextLabel preview, RichTextLabel nextPreview, RichTextLabel heldPiece, RichTextLabel levelUI, Label levelTimesUI)
     {
         dimensions = dim;
         nBoard = board;
@@ -33,17 +43,19 @@ public partial class board : Node2D
 		this.score = score;
 		currentPreview = preview;
 		this.nextPreview = nextPreview;
+		this.heldPiece = heldPiece;
+		this.levelUI = levelUI;
+		this.levelTimesUI = levelTimesUI;
 		initializeTiles();
     }
 
     public void initializeTiles()
 	{
 		tiles = new tile[dimensions.X,dimensions.Y];
-		asciiZ0 = new RichTextLabel[dimensions.X,dimensions.Y];
-        asciiZ1 = new RichTextLabel[dimensions.X, dimensions.Y];
-        asciiZ2 = new RichTextLabel[dimensions.X, dimensions.Y];
-        staleTiles = new List<RichTextLabel>();
-		renderQueue = new List<renderable>();
+		asciiBackground = new RichTextLabel[dimensions.X,dimensions.Y];
+        asciiForeground = new RichTextLabel[dimensions.X, dimensions.Y];
+        asciiAnimations = new RichTextLabel[dimensions.X, dimensions.Y];
+
 		initializeAsciiNodes();
 
 
@@ -51,47 +63,89 @@ public partial class board : Node2D
 		//level.loadStarterTiles whatever
     }
 
-	public void updateAscii() //unrender old tiles and render new ones
+	public void updateGraphics() //RUNS ON TICK
 	{
-		foreach(RichTextLabel text in staleTiles) //remove old tiles
-		{
+        foreach (RichTextLabel text in tickStaleTiles) //remove old tiles
+        {
+            text.Text = " ";
+        }
+        tickStaleTiles.Clear();
+
+
+        foreach (renderable render in tickRenderQueue) //render new tiles
+        {
+            renderTile(render);
+        }
+        tickRenderQueue.Clear();
+    }
+    public void markTickStale(Vector2I pos, int z) //mark a position to clear graphics
+    {
+        tickStaleTiles.Add(getAsciiNode(pos, z));
+    }
+
+    public void updateBoard() //RUNS ON BOARD UPDATE
+    { //unrender old tiles and render new ones
+        foreach (RichTextLabel text in boardStaleTiles) //remove old tiles
+        {
 			text.Text = " ";
 		}
-		staleTiles.Clear();
+		boardStaleTiles.Clear();
 
 
-		foreach(renderable render in renderQueue) //render new tiles
+		foreach(renderable render in boardRenderQueue) //render new tiles
 		{
 			renderTile(render);
-			
 		}
-		renderQueue.Clear();
+		boardRenderQueue.Clear();
 	}
+    public void markBoardStale(Vector2I pos, int z) //mark a position to clear graphics
+    {
+        boardStaleTiles.Add(getAsciiNode(pos, z));
+    }
 
-	public void renderTile(renderable render) //text is what should render, usually just "O"
-	{
-		RichTextLabel node;
-        switch (render.z)
+    public void animationTick(double delta) //run from main
+    {
+        foreach (animatable animate in animatables)
         {
-            case 0:
-				node = asciiZ0[render.pos.X, render.pos.Y];
-                break;
-			case 1:
-                node = asciiZ1[render.pos.X, render.pos.Y];
-                break;
-			case 2:
-                node = asciiZ2[render.pos.X, render.pos.Y];
-                break;
-			default:
-				goto End;
+            animate.tick(delta);
+        }
+		foreach (animatable stale in staleAnimatables)
+		{
+			animatables.Remove(stale);
 		}
+    }
+
+    public void renderTile(renderable render) //renders a renderable object to the ascii board
+	{
+		RichTextLabel node = getAsciiNode(render.pos, render.z);
         node.Text = render.text;
 		if (render.temporary)
 		{
-			staleTiles.Add(node);
+			boardStaleTiles.Add(node);
 		}
-    End: {}
 	}
+
+	
+
+	public RichTextLabel getAsciiNode(Vector2I pos, int z)
+	{
+        RichTextLabel node;
+        switch (z)
+        {
+            case 0:
+                node = asciiBackground[pos.X, pos.Y];
+                break;
+            case 1:
+                node = asciiForeground[pos.X, pos.Y];
+                break;
+            case 2:
+                node = asciiAnimations[pos.X, pos.Y];
+                break;
+            default:
+				return null;
+        }
+		return node;
+    }
 
 	public void lowerRows(List<int> scoredRows) //lowers rows above the scored rows after scoring
 	{
@@ -109,7 +163,6 @@ public partial class board : Node2D
         for (int i = 0; i < length; i++)
 		{
 		
-			GD.Print("FAT BITCHES!!!!!!!!!!11");
 			for (int y = rows[i] + 1; y < dimensions.Y; y++)
 			{
 				for (int x = 0; x < dimensions.X; x++)
@@ -117,10 +170,10 @@ public partial class board : Node2D
 					tile tile = tiles[x, y];
 					if (tile != null)
 					{
-                        GD.Print($"MOVING PIECE from {tile.boardPos} to [{tile.boardPos.X}, {tile.boardPos.Y - 1}]");
+                        //GD.Print($"MOVING PIECE from {tile.boardPos} to [{tile.boardPos.X}, {tile.boardPos.Y - 1}]");
 
 
-						staleTiles.Add(asciiZ1[x, y]);
+						boardStaleTiles.Add(asciiForeground[x, y]);
                         tiles[x, y - 1] = tile;
                         tile.boardPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - 1);
                         tiles[x, y] = null;
@@ -141,13 +194,25 @@ public partial class board : Node2D
 	{
 		currentPreview.Text = $"NOW PLAYING:\n{currentPiece.name}";
 		nextPreview.Text = $"NEXT UP:\n{nextPiece.name}";
-		
 	}
 	public void updateScore(long value)
 	{
 		score.Text = $"SCORE:\n{value}";
 	}
 
+	public void updateLevelUI(int level, double times)
+	{
+		levelUI.Text = level.ToString();
+		levelTimesUI.Text = times.ToString();
+	}
+
+	public void updateHeldUI(boardPiece piece)
+	{
+		if(piece != null)
+		{
+            heldPiece.Text = $"HOLD:\n{piece.name}";
+        }
+    }
 	public void initializeAsciiNodes() //create and set all ascii nodes properly
 	{
 		
@@ -159,9 +224,9 @@ public partial class board : Node2D
                 RichTextLabel node1 = createAsciiNode(x, y, 1);
                 RichTextLabel node2 = createAsciiNode(x, y, 2);
 
-                asciiZ0[x, y] = node0;
-                asciiZ1[x, y] = node1;
-                asciiZ2[x, y] = node2;
+                asciiBackground[x, y] = node0;
+                asciiForeground[x, y] = node1;
+                asciiAnimations[x, y] = node2;
             }
 		}
 	}
@@ -178,6 +243,30 @@ public partial class board : Node2D
 		node.ZIndex = z;
 		return node;
     }
+
+	public void clearGraphics()
+	{
+		foreach(RichTextLabel text in asciiBackground)
+		{
+			text.Clear();
+		}
+        foreach (RichTextLabel text in asciiForeground)
+        {
+            text.Clear();
+        }
+        foreach (RichTextLabel text in asciiAnimations)
+        {
+            text.Clear();
+        }
+    }
+
+	public void resetUI()
+	{
+		score.Text = "SCORE:";
+		currentPreview.Text = "NOW PLAYING:";
+		nextPreview.Text = "NEXT UP:";
+		heldPiece.Text = "HOLD:";
+	}
 
 	public bool isPositionValid(Vector2I pos, bool shouldCollide) //checks if a tile is occupied or otherwise outside of the board
 	{ //shouldCollide refers to colliding with other tiles

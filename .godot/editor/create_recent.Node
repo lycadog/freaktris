@@ -1,8 +1,8 @@
-RichTextLabel
+Polygon2D
 Label
+RichTextLabel
 Control
 Node2D
-Polygon2D
 CollisionPolygon2D
 CollisionShape2D
 Skeleton2D

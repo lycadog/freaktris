@@ -56,9 +56,13 @@ public class basicTile : tileType
     {
     }
 
-    public override long score(tile tile, long rowScore)
+    public override long score(tile tile)
     {
-        return rowScore + 1;
+        return 1;
+    }
+    public override long getMultiplier(tile tile)
+    {
+        return 0;
     }
 
     public override void tick(tile tile)

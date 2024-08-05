@@ -21,8 +21,9 @@ public class boardPiece
     public Vector2I dimensions { get; set; }
     public Vector2I rotDimensions { get; set; } //piece dimensions but rotated properly after rotation
     public Vector2I pos { get; set; } //this position might be desynced from the piece's tile's positions due to 0 index array shenanigans, look into later //what
-    public Vector2I dropPos {  get; set; } 
+    public Vector2I dropPos {  get; set; }
     public Vector2I origin {  get; set; }
+    public int rotation { get; set; } //varies from 0-3
     public bool isPlaced {  get; set; }
     public string name { get; set; }
     public string color { get; set; }
@@ -37,11 +38,19 @@ public class boardPiece
         }
         
         
-        board.updateAscii();
+        board.updateBoard();
     }
 
     public void rotatePiece(int direction) //returns true if the rotation is valid
     {
+        rotation += direction;
+        if(rotation > 3)
+        {
+            rotation -= 4;
+        }else if (rotation < 0)
+        {
+            rotation += 4;
+        }
         foreach(tile tile in tiles)
         {
                 tile.rotate(direction);
@@ -51,7 +60,7 @@ public class boardPiece
         rotDimensions = swap; //switch rot dimensions since rotDimensions is rotate-adjusted dimensions
         renderDropShadow();
         
-        board.updateAscii();
+        board.updateBoard();
     }
     
     public bool isRotationValid(int direction)
@@ -93,7 +102,7 @@ public class boardPiece
             tile.render(board);
         }
         isPlaced = true;
-        board.updateAscii();
+        board.updateBoard();
     }
 
     public bool isMoveValid(int xOffset = 0, int yOffset = 0) //returns whether or not a move is valid
@@ -152,7 +161,7 @@ public class boardPiece
         {
             Vector2I previewPos = new Vector2I(tile.boardPos.X, tile.boardPos.Y - y);
             renderable render = new renderable(previewPos, "[color=999999]▒", 0, true);
-            board.renderQueue.Add(render);
+            board.boardRenderQueue.Add(render);
             
         }
     }
