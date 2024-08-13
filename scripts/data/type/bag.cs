@@ -1,53 +1,31 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class bag
 {
     //add a proper constructor to use a new starter set type to add pieces!
-    public bag()
+    public bag(starterBag bag)
     {
         pieces = new List<bagPiece>();
-        /*data.bLong.addToBag(this);
-		data.bTBlock.addToBag(this);
-        data.bSquare.addToBag(this);
-        data.bLBlockL.addToBag(this);
-        data.bLBlockR.addToBag(this);
-        data.bZBlockL.addToBag(this);
-        data.bZBlockR.addToBag(this);*/
 
-        data.bLong.addToBag(this);
-        data.bStick.addToBag(this);
-        data.bWedge.addToBag(this);
-        data.bWedge.addToBag(this);
-        data.bLongT.addToBag(this);
-        data.bCorner.addToBag(this);
-        data.bBowl.addToBag(this);
-        data.bRectangle.addToBag(this);
+        GD.Print(bag.name);
 
-        /*data.bLong.addToBag(this);
-        data.bCaret.addToBag(this);
-        data.bHatchetL.addToBag(this);
-        data.bHatchetR.addToBag(this);
-        data.bDipole.addToBag(this);
-        data.bSlash.addToBag(this);
-        data.bStump.addToBag(this);
-        data.bWedge.addToBag(this);
-        data.bTwig.addToBag(this);
-        data.bTwig.addToBag(this);
-        data.bNub.addToBag(this);*/
+        /*foreach(pieceType piece in sBag.pieces)
+        {
+            GD.Print(piece.name);
+            piece.addToBag(this);
+        }*/
 
-        name = "bag";
-        GD.Print("bag made!");
+
+        name = bag.name;
+        GD.Print($"bag {name} made");
     }
 
     public List<bagPiece> pieces;
-    public tileSet starterSet;
-
-
-
-
     public string name { get; set; }
+
     public boardPiece getPiece(board board)
     {
         foreach(bagPiece pieceW in pieces)
@@ -74,4 +52,33 @@ public class bag
         
         return pieces[index].getBoardPiece(board);
     }
+
+    /*data.bLong.addToBag(this);
+	data.bTBlock.addToBag(this);
+    data.bSquare.addToBag(this);
+    data.bLBlockL.addToBag(this);
+    data.bLBlockR.addToBag(this);
+    data.bZBlockL.addToBag(this);
+    data.bZBlockR.addToBag(this);*/
+
+    /*data.bLong.addToBag(this);
+    data.bStick.addToBag(this);
+    data.bWedge.addToBag(this);
+    data.bWedge.addToBag(this);
+    data.bLongT.addToBag(this);
+    data.bCorner.addToBag(this);
+    data.bBowl.addToBag(this);
+    data.bRectangle.addToBag(this);*/
+
+    /*data.bLong.addToBag(this);
+    data.bCaret.addToBag(this);
+    data.bHatchetL.addToBag(this);
+    data.bHatchetR.addToBag(this);
+    data.bDipole.addToBag(this);
+    data.bSlash.addToBag(this);
+    data.bStump.addToBag(this);
+    data.bWedge.addToBag(this);
+    data.bTwig.addToBag(this);
+    data.bTwig.addToBag(this);
+    data.bNub.addToBag(this);*/
 }

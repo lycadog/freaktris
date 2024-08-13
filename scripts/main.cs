@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+//main is for all things encounters!
 public partial class main : Node2D
 { //IDEA: eventlistener base class for our custom objects so they can be processed through by Events
 	//REWORK the gamestate steps, endState should be split INTO TWO: the first one processes everything and stores it, then the second one animates it and finalizes it
@@ -10,7 +11,6 @@ public partial class main : Node2D
 
     public board board;
 
-    //run constants
     public bag bag;
 
 	//board variables
@@ -37,15 +37,6 @@ public partial class main : Node2D
 	public List<int> updatedRows = new List<int>();
 	public List<int> scorableRows = new List<int>();
 
-	
-
-    public void runInit() //runs on run start, initializes important variables
-    {
-		state = new gameState();
-		state = gameState.roundStart;
-		bag = new bag();
-    }
-
     public void coreGameLoop(double deltaTime) //needs some cleanup
     {
 			switch (state)
@@ -53,7 +44,7 @@ public partial class main : Node2D
             // ========== ROUND START ==========
             case gameState.roundStart: //run once when entering a battle (round)!
 
-                gameStart();
+                initializeRound();
 				state = gameState.turnStart;
                 break;
 
@@ -137,7 +128,7 @@ public partial class main : Node2D
 						turnScore += tile.score(turnScore);
 						turnMultiplier += tile.type.getMultiplier(tile);
 						board.markBoardStale(tile.boardPos, 1);
-						animatable anim = new animatable(new List<string> { "█", "▓", "▒", "░", " " }, false, tile.boardPos, 0.1, board);
+						animatable anim = new animatable(new List<string> { "█", "▓", "▒", "░", " " }, false, tile.boardPos, 0.05, board);
 						board.animatables.Add(anim);
 					}
 				}
@@ -148,7 +139,7 @@ public partial class main : Node2D
 
 				// ========== END TURN FINISH ==========
 			case gameState.endTurnFinish: //finalize everything
-				if(scoreAnimationTimer >= 0.5 | scorableRows.Count == 0) //THIS SHOULD BE CHANGED LATER, waits for animation to finish then runs end turn
+				if(scoreAnimationTimer >= 0.25 | scorableRows.Count == 0) //THIS SHOULD BE CHANGED LATER, waits for animation to finish then runs end turn
 				{ //finalize everything once animations are over
                     scoreAnimationTimer = 0;
 
@@ -221,7 +212,7 @@ public partial class main : Node2D
 	//a lot of the functions below need to properly call the tileType function to do things rather than doing them on their own
 	//otherwise we will not get our intended custom tileType behavior //i think this is resolved
 
-	public void gameStart() //add code to initialize board graphics properly
+	public void initializeRound() //add code to initialize board graphics properly
 	{
 		Node2D nBoard = GetNode<Node2D>("board");
 		Control asciiControl = GetNode<Control>("board/asciiBoard");
@@ -370,8 +361,9 @@ public partial class main : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		runInit();
-	}
+        state = new gameState();
+        state = gameState.roundStart;
+    }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
@@ -387,8 +379,7 @@ public partial class main : Node2D
 		midTurn, //handling piece falling and collision
 		endTurnStart, //processing everything once
 		endTurnFinish, //finishing up animations then finalizing everything
-		endRound, //finish up round and transition to the world map
-		world,
-		room
+		endRound //finish up round and transition to the world map
+
     }
 }

@@ -3,19 +3,20 @@ using System;
 
 public static class data
 {
-    public static tileSet[,] tiles;
-    static tileSet common = new(new tileType[] { new basicTile() }, new float[] { 100 }); //this contains all possible tiletypes for the Common tileset; rewrite this eventually to have weights as well
 
+    public static starterBag classicBag = new starterBag(new pieceType[] { bLong, bSquare, bTBlock, bLBlockR, bLBlockL, bZBlockR, bZBlockL }, "Classic Bag");
+
+    static tileSet common = new(new tileType[] { new basicTile() }, new float[] { 100 }); //this contains all possible tiletypes for the Common tileset; rewrite this eventually to have weights as well
 
     static colorSet starter = new colorSet(new string[] { "2cf5eb", "19e68a", "f52cd3", "e66b19", "f5ee2f", "35f52f", "a52ff5", "f53c2f", "f7a414", "8194eb", "eb83e9", "83ebc5", "eb83ab", "90f28d", "f2a08d", "2c4282", "691628", "327542" });
 
-    public static pieceType bLong = new(4, 1, tiles = new tileSet[,] { { common }, { common }, { common }, { common } }, new Vector2I(2, 0), 4, "Line", starter);
-    public static pieceType bSquare = new(2, 2, tiles = new tileSet[,] { { common, common }, { common, common } }, new Vector2I(1, 1), 4, "Square", starter);
-    public static pieceType bTBlock = new(3, 2, tiles = new tileSet[,] { { common, null }, { common, common }, { common, null } }, new Vector2I(1, 0), 4, "T Block", starter);
-    public static pieceType bLBlockR = new(2, 3, tiles = new tileSet[,] { { common, common, common }, { common, null, null } }, new Vector2I(0, 1), 4, "Right L Block", starter);
-    public static pieceType bLBlockL = new(2, 3, tiles = new tileSet[,] { { common, null, null }, { common, common, common } }, new Vector2I(0, 1), 4, "Left L Block", starter);
-    public static pieceType bZBlockR = new(2, 3, tiles = new tileSet[,] { { null, common, common }, { common, common, null } }, new Vector2I(0, 1), 4, "Right Z Block", starter);
-    public static pieceType bZBlockL = new(2, 3, tiles = new tileSet[,] { { common, common, null }, { null, common, common } }, new Vector2I(0, 1), 4, "Left Z Block", starter);
+    public static pieceType bLong = new(4, 1, new tileSet[,] { { common }, { common }, { common }, { common } }, new Vector2I(2, 0), 4, "Line", starter);
+    public static pieceType bSquare = new(2, 2, new tileSet[,] { { common, common }, { common, common } }, new Vector2I(1, 1), 4, "Square", starter);
+    public static pieceType bTBlock = new(3, 2, new tileSet[,] { { common, null }, { common, common }, { common, null } }, new Vector2I(1, 0), 4, "T Block", starter);
+    public static pieceType bLBlockR = new(2, 3, new tileSet[,] { { common, common, common }, { common, null, null } }, new Vector2I(0, 1), 4, "Right L Block", starter);
+    public static pieceType bLBlockL = new(2, 3, new tileSet[,] { { common, null, null }, { common, common, common } }, new Vector2I(0, 1), 4, "Left L Block", starter);
+    public static pieceType bZBlockR = new(2, 3, new tileSet[,] { { null, common, common }, { common, common, null } }, new Vector2I(0, 1), 4, "Right Z Block", starter);
+    public static pieceType bZBlockL = new(2, 3, new tileSet[,] { { common, common, null }, { null, common, common } }, new Vector2I(0, 1), 4, "Left Z Block", starter);
 
     public static pieceType bWedge = new pieceType(2, 2, new tileSet[,] { { common, common }, { common, null } }, new Vector2I(0, 0), 3, "Wedge", starter);
     public static pieceType bTwig = new pieceType(1, 2, new tileSet[,] { { common, common } }, new Vector2I(0, 1), 2, "Twig", starter);
@@ -39,5 +40,5 @@ public static class data
 
     public static pieceType bDiamond = new pieceType(3, 3, new tileSet[,] { { null, common, null }, { common, common, common }, { null, common, null } }, new Vector2I(1, 1), 5, "Diamond", starter);
 
-    public static pieceType bBrick = new(4, 3, tiles = new tileSet[,] { { common, common, common }, { common, common, common }, { common, common, common }, { common, common, common } }, new Vector2I(2, 2), 12, "Brick", starter);
+    public static pieceType bBrick = new(4, 3, new tileSet[,] { { common, common, common }, { common, common, common }, { common, common, common }, { common, common, common } }, new Vector2I(2, 2), 12, "Brick", starter);
 }

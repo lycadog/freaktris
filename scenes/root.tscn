@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://f3b7de3u2fvi"]
+
+[ext_resource type="Script" path="res://scripts/sceneHandler.cs" id="1_hkjss"]
+
+[node name="root" type="Node2D"]
+script = ExtResource("1_hkjss")
